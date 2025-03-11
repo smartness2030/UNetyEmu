@@ -3,6 +3,10 @@ from scapy.all import sniff
 import socket
 import sys
 import os
+from datetime import datetime
+
+# Get unique timestamp at program start
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
 # -----------------------------------------------------------------------------------------------------
 
@@ -74,9 +78,11 @@ def extract_message_from_packet(packet):
 
 # Function to log RSSI
 def log_rssi():
-    """Logs RSSI to a file dynamically based on hostname."""
+    """Logs RSSI to a file dynamically based on hostname and timestamp."""
     rssi = os.popen("iw dev {}-wlan0 link | grep 'signal' | awk '{{print $2}}'".format(hostname)).read().strip()
-    output_file = "/root/{}_rssi.csv".format(hostname)  # File path
+
+    # File name with fixed timestamp
+    output_file = "/root/{}_rssi_{}.csv".format(hostname, timestamp)
 
     # Append to file, creating it if necessary
     write_header = not os.path.exists(output_file)

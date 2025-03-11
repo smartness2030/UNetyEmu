@@ -2,6 +2,7 @@ using UnityEngine; // Unity Engine library to use in MonoBehaviour classes
 using System; // Library to use in DateTime class
 using System.Collections; // Library to use in IEnumerator class
 using System.Collections.Generic; // Library to use in List and Dictionary classes
+using System.Linq; // Library to use in OrderBy method
 
 // Class to manage the logistic center and generate missions for the drones
 public class LogisticCenter : MonoBehaviour
@@ -9,6 +10,9 @@ public class LogisticCenter : MonoBehaviour
 
     // -----------------------------------------------------------------------------------------------------
     // Public variables that appear in the Inspector:
+
+    // Flag to indicate random pick-up and delivery locations
+    public bool randomPickupAndDelivery = false; 
 
     // Variable to store the decoded unassigned mission
     public MissionGenerator.NewMission decodedUnassignedMission;
@@ -73,8 +77,8 @@ public class LogisticCenter : MonoBehaviour
     // Flag to indicate mission generation
     private bool isGeneratingMission = false; 
 
-    // Game object to store the random drone pad package
-    private GameObject randomDronePadPackage;
+    // Game object to store the drone pad package
+    private GameObject selectedDronePadPackage;
 
     // Game object to store the package prefab
     private GameObject prefabPackage;
@@ -88,8 +92,8 @@ public class LogisticCenter : MonoBehaviour
     // List to store the drone pads with customers
     private List<String> DronePadCustomersList;
 
-    // Variable to store the random index in the selection of the drone pad package
-    private int randomIndex;
+    // Variable to store the index in the selection of the drone pad package
+    private int index;
 
     // Variable for the wait time in the mission generation
     private float waitTime;
@@ -185,8 +189,8 @@ public class LogisticCenter : MonoBehaviour
     // Game object list to store the instantiated package
     private GameObject[] dronePadsPackage;
 
-    // List to store the random index list
-    private List<int> randomIndexList;
+    // List to store the index list
+    private List<int> indexList;
 
     // Vector to store the position of the package
     private Vector3 positionPackage;
@@ -421,7 +425,7 @@ public class LogisticCenter : MonoBehaviour
         {
             
             // Generate a new mission 
-            newMissionString = MissionGenerator.GenerateMission(DronePadCustomersList);
+            newMissionString = MissionGenerator.GenerateMission(DronePadCustomersList, randomPickupAndDelivery);
 
             // Add the new mission to the list of unassigned missions
             unassignedMissions.Add(newMissionString);
@@ -546,11 +550,12 @@ public class LogisticCenter : MonoBehaviour
         getObjectFeatures = playerObject.GetComponent<GetObjectFeatures>();
         getDroneFeatures = playerObject.GetComponent<GetDroneFeatures>();
         
-        // Set the random pick-up location
-        setPickUpLocation = SetRandomPickupLocation(
+        // Set the pick-up location
+        setPickUpLocation = SetPickupLocation(
             decodedUnassignedMission.missionId,
             getObjectFeatures.prefabName,
-            decodedUnassignedMission.packageWeight
+            decodedUnassignedMission.packageWeight,
+            randomPickupAndDelivery
         );
         
         // Set the flight preferences
@@ -688,47 +693,61 @@ public class LogisticCenter : MonoBehaviour
     }
 
     // -----------------------------------------------------------------------------------------------------
-    // Class to set a random pick-up location:
+    // Class to set a pick-up location:
 
-    MissionInfo.Location SetRandomPickupLocation(string missionID, string prefabName, float packageWeight)
+    MissionInfo.Location SetPickupLocation(string missionID, string prefabName, float packageWeight, bool randomPickupAndDelivery)
     {
         
         // Get the list of drone pads with Tag = "DronePadPackage"
         dronePadsPackage = GameObject.FindGameObjectsWithTag("DronePadPackage");
 
-        // Initialize the random index list
-        randomIndexList = new List<int>();
+        // Sort the drone pads by name
+        dronePadsPackage = dronePadsPackage.OrderBy(obj => obj.name).ToArray();
 
-        // Generate a random pick-up location
+        // Initialize the index list
+        indexList = new List<int>();
+
+        // Initialize the count index
+        int countIndex = 0;
+
+        // Generate a pick-up location
         do
         {
             
-            // Get a DronePadPackage object at a random index
-            randomIndex = UnityEngine.Random.Range(0, dronePadsPackage.Length);
-            randomDronePadPackage = dronePadsPackage[randomIndex];
+            // Get a DronePadPackage object at a index
+            if(randomPickupAndDelivery) index = UnityEngine.Random.Range(0, dronePadsPackage.Length);
+            else index = countIndex; 
 
-            // Check if the random index is already in the list
-            if (randomIndexList.Contains(randomIndex)) continue;
+            // Get the DronePadPackage object
+            selectedDronePadPackage = dronePadsPackage[index];
 
-            // Add the random index to the list
-            randomIndexList.Add(randomIndex);
+            Debug.Log(missionID + selectedDronePadPackage.name);
 
-        } while (DronePadPackageList.Contains(randomDronePadPackage.name) && randomIndexList.Count < dronePadsPackage.Length);
+            // Check if the index is already in the list
+            if (indexList.Contains(index)){
+                countIndex++;
+                continue;
+            }
 
-        // Add the random DronePadPackage object to the list
-        DronePadPackageList.Add(randomDronePadPackage.name);
+            // Add the index to the list
+            indexList.Add(index);
+
+        } while (DronePadPackageList.Contains(selectedDronePadPackage.name) && indexList.Count < dronePadsPackage.Length);
+
+        // Add the DronePadPackage object to the list
+        DronePadPackageList.Add(selectedDronePadPackage.name);
         
         // Check if there are DronePadPackage objects in the scene
         if (dronePadsPackage.Length > 0)
         {
 
-            // Set the pick-up location to the random DronePadPackage object
+            // Set the pick-up location to the DronePadPackage object
             pickUpLocation = new MissionInfo.Location
             {
-                latitude = randomDronePadPackage.transform.position.z,
-                longitude = randomDronePadPackage.transform.position.x,
-                altitude = randomDronePadPackage.transform.position.y,
-                azimuth = randomDronePadPackage.transform.eulerAngles.y
+                latitude = selectedDronePadPackage.transform.position.z,
+                longitude = selectedDronePadPackage.transform.position.x,
+                altitude = selectedDronePadPackage.transform.position.y,
+                azimuth = selectedDronePadPackage.transform.eulerAngles.y
             };
 
             // Load the package prefab based on the drone pad name
@@ -743,16 +762,16 @@ public class LogisticCenter : MonoBehaviour
 
             // Set the package position and orientation
             positionPackage = new Vector3(
-                randomDronePadPackage.transform.position.x, 
-                randomDronePadPackage.transform.position.y, 
-                randomDronePadPackage.transform.position.z
+                selectedDronePadPackage.transform.position.x, 
+                selectedDronePadPackage.transform.position.y, 
+                selectedDronePadPackage.transform.position.z
             );
 
             // Set the package rotation
             rotationPackage = Quaternion.Euler(
-                randomDronePadPackage.transform.eulerAngles.x, 
-                randomDronePadPackage.transform.eulerAngles.y, 
-                randomDronePadPackage.transform.eulerAngles.z
+                selectedDronePadPackage.transform.eulerAngles.x, 
+                selectedDronePadPackage.transform.eulerAngles.y, 
+                selectedDronePadPackage.transform.eulerAngles.z
             );
 
             // Instantiate the package game object

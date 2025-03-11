@@ -2,6 +2,7 @@ using System; // Library to use serializable classes
 using UnityEngine; // Unity Engine library to use in MonoBehaviour classes
 using Newtonsoft.Json.Linq; // Library to use JSON objects
 using System.Collections.Generic; // Library to use in List and Dictionary classes
+using System.Linq; // Library to use in OrderBy method
 
 // Class to generate a random mission JSON using the DronePadCustomer objects in the scene
 public class MissionGenerator : MonoBehaviour
@@ -56,15 +57,15 @@ public class MissionGenerator : MonoBehaviour
     }
 
     // -----------------------------------------------------------------------------------------------------
-    // Method to generate a random mission JSON:
+    // Method to generate a mission JSON:
 
-    public static string GenerateMission(List<String> DronePadCustomersList)
+    public static string GenerateMission(List<String> DronePadCustomersList, bool randomPickupAndDelivery)
     {
         
-        // Generate a random missionId (UUID format)
+        // Generate a missionId (UUID format)
         string missionId = Guid.NewGuid().ToString();
 
-        // Generate a random arrival date and time
+        // Generate the arrival date and time
         DateTime now = DateTime.Now;
         string arrivalDateTime = now.ToString("yyyy-MM-dd_HH-mm-ss");
 
@@ -74,28 +75,47 @@ public class MissionGenerator : MonoBehaviour
         // Find all DronePadCustomer objects in the scene
         GameObject[] dronePadsCustomer = GameObject.FindGameObjectsWithTag("DronePadCustomer");
 
-        List<int> randomIndexList = new List<int>();
-        int randomIndex;
-        GameObject randomDronePadCustomer;
+        // Sort the drone pads by name
+        dronePadsCustomer = dronePadsCustomer.OrderBy(obj => obj.name).ToArray();
 
-        // Generate a random DronePadCustomer object
+        // Initialize the index list
+        List<int> indexList = new List<int>();
+
+        //  Initialize the index variable
+        int index;
+
+        // Initialize the game object variable to store the selected DronePadCustomer object
+        GameObject selectedDronePadCustomer;
+
+        // Initialize the countIndex variable
+        int countIndex = 0;
+
+        // Generate a DronePadCustomer object
         do
         {
             
-            // Get the DronePadCustomer object at a random index
-            randomIndex = UnityEngine.Random.Range(0, dronePadsCustomer.Length);
-            randomDronePadCustomer = dronePadsCustomer[randomIndex]; 
+            // Get the DronePadCustomer object at an index
+            if(randomPickupAndDelivery) index = UnityEngine.Random.Range(0, dronePadsCustomer.Length);
+            else index = countIndex;
 
-            // Check if the random index is already in the list
-            if (randomIndexList.Contains(randomIndex)) continue;
+            // Get the DronePadCustomer object
+            selectedDronePadCustomer = dronePadsCustomer[index]; 
 
-            // Add the random index to the list
-            randomIndexList.Add(randomIndex);
+            Debug.Log(missionId + selectedDronePadCustomer.name);
 
-        } while (DronePadCustomersList.Contains(randomDronePadCustomer.name) && randomIndexList.Count < dronePadsCustomer.Length);
+            // Check if the index is already in the list
+            if (indexList.Contains(index)){
+                countIndex++;
+                continue;
+            } 
 
-        // Add the random DronePadCustomer object to the list
-        DronePadCustomersList.Add(randomDronePadCustomer.name);
+            // Add the index to the list
+            indexList.Add(index);
+
+        } while (DronePadCustomersList.Contains(selectedDronePadCustomer.name) && indexList.Count < dronePadsCustomer.Length);
+
+        // Add the DronePadCustomer object to the list
+        DronePadCustomersList.Add(selectedDronePadCustomer.name);
 
         // Check if there are DronePadCustomer objects in the scene
         if (dronePadsCustomer.Length == 0) 
@@ -105,12 +125,12 @@ public class MissionGenerator : MonoBehaviour
         else
         {
             
-            // Set the delivery location to the random DronePadCustomer object
+            // Set the delivery location to the DronePadCustomer object
             deliveryLocation = new Location(
-                randomDronePadCustomer.transform.position.z,
-                randomDronePadCustomer.transform.position.x,
-                randomDronePadCustomer.transform.position.y,
-                randomDronePadCustomer.transform.eulerAngles.y
+                selectedDronePadCustomer.transform.position.z,
+                selectedDronePadCustomer.transform.position.x,
+                selectedDronePadCustomer.transform.position.y,
+                selectedDronePadCustomer.transform.eulerAngles.y
             );
 
         }

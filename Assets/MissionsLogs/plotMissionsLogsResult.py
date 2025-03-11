@@ -3,16 +3,21 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-import seaborn as sns
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 # -----------------------------------------------------------------------------------------------------
 
 # CSV file name
-csv_filename = "MissionsLogs_20250303_222334.csv"
+csv_filename = "MissionsLogs_20250311_103305"
+
+# Set the radius to draw the drone pads
+dronePadsRadius = 20
+
+# -----------------------------------------------------------------------------------------------------
 
 # CSV file path
 file_path = os.getcwd() + "/"
-csv_file = file_path + csv_filename
+csv_file = file_path + csv_filename + ".csv"
 
 # Read the CSV file into a DataFrame
 df = pd.read_csv(csv_file)
@@ -56,6 +61,7 @@ pivot_table = battery_usage.pivot_table(index=['PlayerName'], columns='CurrentSt
 
 # Predefined colors for each state
 classic_colors = ['red', 'blue', 'green', 'brown', 'orange', 'purple', 'black', 'pink', 'magenta', 'yellow', 'cyan']
+classic_colors_dronePads = ['blue', 'orange', 'red']
 
 # Assign colors to each state
 state_colors = {
@@ -69,6 +75,126 @@ state_colors = {
     'DeliverPackage': classic_colors[7],
     'ReturnToHub': classic_colors[8]
 }
+   
+# -----------------------------------------------------------------------------------------------------
+
+# Function to create a 3D circle for the DronePads
+def plot_3d_circle(ax, center, radius, color, num_points=100):
+    
+    theta = np.linspace(0, 2 * np.pi, num_points) # Vector to define the circle
+    x = center[0] + radius * np.cos(theta) # 2D circle coordinates
+    y = center[1] + radius * np.sin(theta)
+    z = np.full_like(x, center[2]) # Keeps the circle flat (in the XY plane)
+
+    ax.plot(x, y, z, color=color, linewidth=2) # Draw the edge of the circle
+
+    # Fill and plot the circle
+    verts = [list(zip(x, y, z))]
+    ax.add_collection3d(Poly3DCollection(verts, facecolors=color, alpha=0.3))
+
+# Define the legend for the drone pads
+dronePad_legend = [
+    ('blue', 'DronePad start and end'),
+    ('orange', 'DronePad for pickup'),
+    ('red', 'DronePad for delivery')
+]
+
+# -----------------------------------------------------------------------------------------------------
+
+# Function for finding local minimums
+def find_minimum_locations(v):
+    local_minimums = []
+    local_minimums_idx = []
+    # Iterate from the end to the beginning of the vector
+    for i in range(len(v)-2, 0, -1):
+        if i == len(v)-2:
+            local_minimums_idx.append(i+1)
+            local_minimums.append(v[i+1])
+        else:
+            if v[i] <= v[i+1] and v[i] < v[i-1]:
+                if v[i] not in local_minimums:
+                    local_minimums_idx.append(i)
+                    local_minimums.append(v[i])
+                    if len(local_minimums) == 3:
+                        break  # Find the first 3 local minimums
+    # Sort the local minimums by altitude
+    local_minimums_idx[1], local_minimums_idx[2] = local_minimums_idx[2], local_minimums_idx[1]
+    return local_minimums_idx
+
+# -----------------------------------------------------------------------------------------------------
+
+# Create a wide figure for the 3D plot
+fig = plt.figure(figsize=(12, 6))
+ax = fig.add_subplot(111, projection='3d')
+
+# Initialize color index and legend handles
+color_idx = 0
+legend_handles = []
+
+# Plot trajectories for each MissionId
+for mission_id in df['MissionId'].unique():
+    
+    # Skip "NoMission" for now, plot later
+    if mission_id == 'NoMission':
+        continue
+
+    # Filter data for the current MissionId
+    mission_group = df[df['MissionId'] == mission_id]
+    
+    # Plot trajectories for each player in the current MissionId
+    for player_name, player_group in mission_group.groupby('PlayerName'):
+        
+        # Assign a color to the player
+        color = classic_colors[color_idx % len(classic_colors)]
+        
+        # Increment the color index
+        color_idx += 1
+
+        # Plot the player's trajectory
+        line, = ax.plot(player_group['Longitude'], player_group['Latitude'], player_group['Altitude'],
+            color=color, marker='o', markersize=3, linestyle='-', linewidth=1.5, alpha=0.7)
+        
+        # Add the player's name and MissionId to the legend
+        legend_handles.append((line, f'{player_name}'))
+    
+    # Filter data for the altitude, longitude, and latitude of the current MissionId
+    altitudes = mission_group['Altitude'].values
+    longitudes = mission_group['Longitude'].values
+    latitudes = mission_group['Latitude'].values
+    
+    # Find the local minimums for the drone pads
+    local_minimums = find_minimum_locations(altitudes)
+    
+    # Plot the drone pads
+    for i, idx in enumerate(local_minimums):
+        
+        # Identify the drone pad by its altitude
+        center = (longitudes[idx], latitudes[idx], altitudes[idx])
+        plot_3d_circle(ax, center, radius=dronePadsRadius, color=classic_colors_dronePads[i])
+        
+        # Add the legend for the drone pads only once
+        if i < len(dronePad_legend):  # Check to avoid index errors
+            color, label = dronePad_legend[i]
+            legend_handles.append((plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=color, markersize=10), label))
+
+# Set axis labels and title
+ax.set_xlabel('\nLongitude')
+ax.set_ylabel('\nLatitude')
+ax.set_zlabel('Altitude')
+ax.set_title('3D Drone Trajectories')
+ax.tick_params(axis='x')
+ax.tick_params(axis='y')
+ax.tick_params(axis='z')
+
+# Add legend outside the plot
+ax.legend(*zip(*legend_handles), bbox_to_anchor=(1.05, 1), loc='upper left')
+
+# Adjust margins to fit the legend
+plt.tight_layout()
+fig.subplots_adjust(right=0.75)
+
+# Save the plot as a PNG file
+plt.savefig(csv_filename+'_Fig1'+'.png', dpi=300)
 
 # -----------------------------------------------------------------------------------------------------
 
@@ -82,7 +208,7 @@ df['RelativeTime'] = (pd.to_datetime(df['CurrentTime'], format='%H:%M:%S') - pd.
 plt.figure(figsize=(10, 6))
 for drone in df['PlayerName'].unique():
     drone_data = df[df['PlayerName'] == drone]
-    plt.plot(drone_data['RelativeTime'], drone_data['Altitude'], linewidth=1.5, label=drone)
+    plt.plot(drone_data['RelativeTime'], drone_data['Altitude'], linewidth=2, label=drone)
 
 # Add labels and legend
 plt.title('Altitudes during drone flight')
@@ -90,6 +216,11 @@ plt.xlabel('Time (s)')
 plt.ylabel('Altitude (m)')
 plt.legend()
 plt.grid(True, linestyle='-', color='gray', alpha=0.5)
+plt.tick_params(axis='x')
+plt.tick_params(axis='y')
+
+# Save the plot as a PNG file
+plt.savefig(csv_filename+'_Fig2'+'.png', dpi=300)
 
 # -----------------------------------------------------------------------------------------------------
 
@@ -109,6 +240,9 @@ ax.grid(True, linestyle='-', color='gray', alpha=0.5)
 
 # Adjust layout for the bar plot
 plt.tight_layout()
+
+# Save the plot as a PNG file
+plt.savefig(csv_filename+'_Fig3'+'.png', dpi=300)
 
 # -----------------------------------------------------------------------------------------------------
 

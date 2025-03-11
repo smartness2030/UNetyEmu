@@ -28,8 +28,8 @@ public class DroneSimpleRoutePlanningAndObstacleAvoidance : MonoBehaviour
     public float minErrorToTarget = 0.5f;
 
     // Variables to control the obstacle detection range and evasion obstacle distance
-    public float obstacleDetectionRange = 10.0f;
-    public float evasionObstacleDistance = 10.0f;
+    public float minValueToDetectCollision = 10.0f;
+    public float metersToTheRightToAvoidObstacle = 10.0f;
 
     // Class to show the detection information
     [Serializable] public class ShowDetectionInfo
@@ -118,7 +118,7 @@ public class DroneSimpleRoutePlanningAndObstacleAvoidance : MonoBehaviour
             {
                 
                 // Check if the distance detected is less than the obstacle detection range
-                if (detection.distanceDetected <= obstacleDetectionRange)
+                if (detection.distanceDetected <= minValueToDetectCollision)
                 {
 
                     // Get the local direction based on the detected object
@@ -152,7 +152,7 @@ public class DroneSimpleRoutePlanningAndObstacleAvoidance : MonoBehaviour
         evadeDirection = targetObj.transform.right;
 
         // Move the target object in the evade direction
-        targetObj.transform.position += evadeDirection * evasionObstacleDistance * Time.deltaTime;
+        targetObj.transform.position += evadeDirection * metersToTheRightToAvoidObstacle * Time.deltaTime;
 
     }
 

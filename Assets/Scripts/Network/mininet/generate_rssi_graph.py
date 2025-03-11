@@ -1,57 +1,80 @@
-# Libraries
 import os
 import csv
 import matplotlib.pyplot as plt
 
 # -----------------------------------------------------------------------------------------------------
 
-def read_rssi_files(directory):
-    """Reads all CSV files in the directory that start with 'DRO' and ends with '.csv'."""
+# CSV file names
+csv_filenames = ["DRO001A_rssi_20250311_133338", "DRO002B_rssi_20250311_133338"]
+
+# -----------------------------------------------------------------------------------------------------
+
+def read_rssi_files(csv_filenames):
+    """Reads specified CSV files and extracts RSSI data."""
     rssi_data = {}
-    for filename in os.listdir(directory):
-        if filename.startswith('DRO') and filename.endswith('.csv'):
-            file_path = os.path.join(directory, filename)
-            with open(file_path, newline='') as csvfile:
+    file_path = os.getcwd() + "/"
+
+    for csv_filename in csv_filenames:
+        csv_file = file_path + csv_filename + ".csv"
+        if os.path.exists(csv_file):
+            with open(csv_file, newline='') as csvfile:
                 reader = csv.reader(csvfile)
                 next(reader)  # Skip the header
                 rssi_values = [int(row[1]) for row in reader if row]
-                rssi_data[filename.split('.')[0]] = rssi_values  # Use the filename (without .csv) as the key
+                rssi_data[csv_filename] = rssi_values
+        else:
+            print(f"File not found: {csv_file}")
     return rssi_data
 
 # -----------------------------------------------------------------------------------------------------
 
-def plot_rssi_data(rssi_data, output_image_path):
-    """Plot RSSI data for all drones and save the image."""
+def plot_rssi_data(rssi_data, names, output_image_path):
+    """Plot RSSI data for all selected files and save the image."""
     plt.figure(figsize=(10, 6))  # Set the figure size
 
-    # Plot a line for each drone
-    for drone_name, rssi_values in rssi_data.items():
-        plt.plot(range(len(rssi_values)), rssi_values, label=drone_name)
+    # Plot a line for each file
+    for (name, rssi_values), filename in zip(rssi_data.items(), names):
+        plt.plot(range(len(rssi_values)), rssi_values, label=filename)
 
     # Customize plot
-    plt.title('RSSI Data for Drones')
+    plt.title('RSSI Data during drone flight')
     plt.xlabel('Time (s)')
     plt.ylabel('RSSI (dBm)')
     plt.legend()
     plt.grid(True)
+    plt.tick_params(axis='x')
+    plt.tick_params(axis='y')
 
     # Save the plot as an image
-    plt.savefig(output_image_path)
-    plt.close()  # Close the plot to avoid memory issues
+    plt.savefig(output_image_path+'.png', dpi=300)
+    plt.show()
 
     print(f"Plot saved as {output_image_path}")
 
 # -----------------------------------------------------------------------------------------------------
 
 def main():
-    input_directory = './'  # Set the directory containing the CSV files
-    output_image_path = 'merged_rssi_plot.png'  # Output image path
+    
+    # Initialize the list of RSSI times
+    rssi_time = []
 
-    # Step 1: Read all RSSI CSV files in the directory
-    rssi_data = read_rssi_files(input_directory)
+    # Get the drone names from the filenames
+    droneNames = [filename.split('_')[0] for filename in csv_filenames]
+    
+    # Iterate over each filename
+    for filename in csv_filenames:
+        # Get everything after the word "rssi"
+        # First, find the position of "rssi" and then take everything after it
+        rssi_index = filename.find('rssi')
+        rssi_time.append(filename[rssi_index:])
+
+    output_image_path = rssi_time[0]  # Output image path
+
+    # Step 1: Read specified RSSI CSV files
+    rssi_data = read_rssi_files(csv_filenames)
 
     # Step 2: Plot the RSSI data and save as an image
-    plot_rssi_data(rssi_data, output_image_path)
+    plot_rssi_data(rssi_data, droneNames, output_image_path)
 
 # -----------------------------------------------------------------------------------------------------
 
