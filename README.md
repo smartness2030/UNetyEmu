@@ -1,4 +1,4 @@
-# UNetyEmu: Unity-based simulator for aerial and non-aerial vehicles with network emulator integration
+# UNetyEmu: Unity-based simulator for aerial and non-aerial vehicles with integrated network emulation
 
 **UNetyEmu** is a novel simulation framework combining Unity and Mininet-WiFi, enabling realistic multi-vehicle experiments with both aerial and ground mobility alongside network emulation. Researchers can study smart city applications like 5G vehicular communication, edge computing, and UAV coordination. By integrating Unity’s 3D simulation and Mininet-WiFi’s real-time network emulation, UNetyEmu provides an environment for evaluating UAV navigation, network performance, and collaborative autonomy in urban settings.
 

@@ -178,20 +178,25 @@ for mission_id in df['MissionId'].unique():
     longitudes = mission_group['Longitude'].values
     latitudes = mission_group['Latitude'].values
     
-    # Find the local minimums for the drone pads
-    local_minimums = find_minimum_locations(altitudes)
-    
-    # Plot the drone pads
-    for i, idx in enumerate(local_minimums):
+    # Plot the drone pads for the current MissionId, if possible
+    try:
         
-        # Identify the drone pad by its altitude
-        center = (longitudes[idx], latitudes[idx], altitudes[idx])
-        plot_3d_circle(ax, center, radius=dronePadsRadius, color=classic_colors_dronePads[i])
+        # Find the local minimums for the drone pads
+        local_minimums = find_minimum_locations(altitudes)
         
-        # Add the legend for the drone pads only once
-        if i < len(dronePad_legend):  # Check to avoid index errors
-            color, label = dronePad_legend[i]
-            legend_handles.append((plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=color, markersize=10), label))
+        # Plot the drone pads
+        for i, idx in enumerate(local_minimums):
+            
+            # Identify the drone pad by its altitude
+            center = (longitudes[idx], latitudes[idx], altitudes[idx])
+            plot_3d_circle(ax, center, radius=dronePadsRadius, color=classic_colors_dronePads[i])
+            
+            # Add the legend for the drone pads only once
+            if i < len(dronePad_legend):  # Check to avoid index errors
+                color, label = dronePad_legend[i]
+                legend_handles.append((plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=color, markersize=10), label))    
+    except:
+        pass
 
 # Set axis labels and title
 ax.set_xlabel('\nLongitude')
