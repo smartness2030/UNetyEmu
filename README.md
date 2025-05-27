@@ -1,6 +1,6 @@
 # UNetyEmu: Unity-based simulator for aerial and non-aerial vehicles with integrated network emulation
 
-**UNetyEmu** is a novel simulation framework combining Unity and Mininet-WiFi, enabling realistic multi-vehicle experiments with both aerial and ground mobility alongside network emulation. Researchers can study smart city applications like 5G vehicular communication, edge computing, and UAV coordination. By integrating Unity’s 3D simulation and Mininet-WiFi’s real-time network emulation, UNetyEmu provides an environment for evaluating UAV navigation, network performance, and collaborative autonomy in urban settings.
+**UNetyEmu** is a novel framework that combines real-time network emulation with high-fidelity mobility simulation, enabling realistic experimentation with both aerial and non-aerial autonomous vehicles. This integration allows researchers to evaluate vehicle coordination under dynamic communication conditions typical of smart city scenarios using 5G (and beyond) networks. Unlike existing experimental platforms, UNetyEmu provides online and offline control connectivity states, supports network emulation, and allows evaluating algorithms related to multiple drones, such as obstacle avoidance, path planning, logistics, and coordination, among others.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/gif2.gif?raw=true" height="220">
@@ -30,23 +30,20 @@ Christian Esteve Rothenberg ([chesteve@unicamp.br](mailto:chesteve@unicamp.br)) 
 # Content of the Wiki documentation
 
 - [a. Repository structure](https://github.com/intrig-unicamp/UNetyEmu/wiki/a.-Repository-structure)
-- [b. Badges considered (Selos Considerados)](https://github.com/intrig-unicamp/UNetyEmu/wiki/b.-Badges-considered-(Selos-Considerados))
-- [c. Basic information](https://github.com/intrig-unicamp/UNetyEmu/wiki/c.-Basic-information)
-- [d. Dependencies](https://github.com/intrig-unicamp/UNetyEmu/wiki/d.-Dependencies)
-- [e. Security concerns](https://github.com/intrig-unicamp/UNetyEmu/wiki/e.-Security-concerns)
-- [f. Installation](https://github.com/intrig-unicamp/UNetyEmu/wiki/f.-Installation)
-    - [Getting started with Unity](https://github.com/intrig-unicamp/UNetyEmu/wiki/f.-Installation#getting-started-with-unity)
-    - [UNetyEmu Basic Setup using Unity](https://github.com/intrig-unicamp/UNetyEmu/wiki/f.-Installation#unetyemu-basic-setup-using-unity)
-    - [Getting started with Mininet-WiFi](https://github.com/intrig-unicamp/UNetyEmu/wiki/f.-Installation#getting-started-with-mininet-wifi)
-    - [UNetyEmu Basic Setup using Mininet-WiFi](https://github.com/intrig-unicamp/UNetyEmu/wiki/f.-Installation#unetyemu-basic-setup-using-mininet-wifi)
-- [g. Minimum test](https://github.com/intrig-unicamp/UNetyEmu/wiki/g.-Minimum-test)
-    - [First Scenario Demo (only in Unity)](https://github.com/intrig-unicamp/UNetyEmu/wiki/g.-Minimum-test#first-scenario-demo-only-in-unity)
-- [h. Experiments](https://github.com/intrig-unicamp/UNetyEmu/wiki/h.-Experiments)
-    - [First Scenario Demo (Continued from section g. Minimum Tests)](https://github.com/intrig-unicamp/UNetyEmu/wiki/h.-Experiments#first-scenario-demo-continued-from-page-g-minimum-tests)
-    - [Second Scenario Demo (also only in Unity)](https://github.com/intrig-unicamp/UNetyEmu/wiki/h.-Experiments#second-scenario-demo-also-only-in-unity)
-    - [Third Scenario Demo (Unity + Mininet-WiFi)](https://github.com/intrig-unicamp/UNetyEmu/wiki/h.-Experiments#third-scenario-demo-unity--mininet-wifi)
-- [i. Videos and Tutorials](https://github.com/intrig-unicamp/UNetyEmu/wiki/i.-Videos-and-Tutorials)
-- [j. LICENSE](https://github.com/intrig-unicamp/UNetyEmu/wiki/j.-LICENSE)
+- [b. Basic information](https://github.com/intrig-unicamp/UNetyEmu/wiki/b.-Basic-information)
+- [c. Dependencies](https://github.com/intrig-unicamp/UNetyEmu/wiki/c.-Dependencies)
+- [d. Full Installation](https://github.com/intrig-unicamp/UNetyEmu/wiki/d.-Installation)
+    - [Getting started with Unity](https://github.com/intrig-unicamp/UNetyEmu/wiki/d.-Installation#getting-started-with-unity)
+    - [UNetyEmu Basic Setup using Unity](https://github.com/intrig-unicamp/UNetyEmu/wiki/d.-Installation#unetyemu-basic-setup-using-unity)
+    - [Getting started with Mininet-WiFi](https://github.com/intrig-unicamp/UNetyEmu/wiki/d.-Installation#getting-started-with-mininet-wifi)
+    - [UNetyEmu Basic Setup using Mininet-WiFi](https://github.com/intrig-unicamp/UNetyEmu/wiki/d.-Installation#unetyemu-basic-setup-using-mininet-wifi)
+- [e. Minimum test](https://github.com/intrig-unicamp/UNetyEmu/wiki/e.-Minimum-test)
+    - [First Scenario Demo (only in Unity)](https://github.com/intrig-unicamp/UNetyEmu/wiki/e.-Minimum-test#first-scenario-demo-only-in-unity)
+- [f. Experiments](https://github.com/intrig-unicamp/UNetyEmu/wiki/f.-Experiments)
+    - [First Scenario Demo (Continued from section g. Minimum Tests)](https://github.com/intrig-unicamp/UNetyEmu/wiki/f.-Experiments#first-scenario-demo-continued-from-page-g-minimum-tests)
+    - [Second Scenario Demo (also only in Unity)](https://github.com/intrig-unicamp/UNetyEmu/wiki/f.-Experiments#second-scenario-demo-also-only-in-unity)
+    - [Third Scenario Demo (Unity + Mininet-WiFi)](https://github.com/intrig-unicamp/UNetyEmu/wiki/f.-Experiments#third-scenario-demo-unity--mininet-wifi)
+- [Videos and Tutorials](https://github.com/intrig-unicamp/UNetyEmu/wiki/Videos-and-Tutorials)
 
 # Repository structure
 
@@ -80,33 +77,31 @@ The repository is structured as follows, according to the files generated by a U
 └── README  
 ```
 
-# Badges considered (Selos Considerados)
-
-The authors of this work consider applying to the following badges: "Artefatos Disponíveis (SeloD)", "Artefatos Funcionais (SeloF)", "Artefatos Sustentáveis (SeloS)", and "Experimentos Reprodutíveis (SeloR)".
-
 # Wiki Documentation
 
 For detailed information on the basic hardware and software requirements, dependencies, installation process and experiments presented in this first version of UNetyEmu, please continue to the full documentation on the [Wiki](https://github.com/intrig-unicamp/UNetyEmu/wiki).
 
 # Videos and Tutorials
 
-Below are a series of videos to help better understand the initial configurations of UNetyEmu along with demonstrations of the scenarios mentioned in this documentation:
+Below are a series of videos/tutorials to help better understand the initial configurations of UNetyEmu, along with demonstration of different simulation and emulation scenarios:
 
-#### Unity Account Video [[link]](https://drive.google.com/file/d/1JxhwFSFr20KYXteRk9xQh-OJWBcP9Ps4/view?usp=sharing)
-
-#### Documentation Video [[link]](https://drive.google.com/file/d/1fTIsD1m1qx0rkB-2y076hkf2bi00-U7O/view?usp=sharing)
-
-#### Opening Unity Project Video [[link]](https://drive.google.com/file/d/16iLVtsC29Wp9RyhF5cUQ0yMUbJCx-Nl0/view?usp=sharing)
-
-#### Scenario 1 Video [[link]](https://drive.google.com/file/d/16ZBhUAti659bQh3IR_0s_TT6xBANPX9x/view?usp=sharing)
-
-#### Scenario 2 Video [[link]](https://drive.google.com/file/d/1N3_DMFN2B2JJavu1VajSF_WvZa_i0CeX/view?usp=sharing)
-
-#### Scenario 3 Video [[link]](https://drive.google.com/file/d/18yqCbzED_H9MR-PKZ7Ri4imRvHL9sclz/view?usp=sharing)
+#### New scenario using the integration of aerial and non-aerial vehicles (Demo submitted for SIGCOMM'25) [[link]](https://drive.google.com/file/d/1Rhcu-AYL5db2wYJLru0RDd6B5Ee99U6q/view?usp=sharing)
 
 #### New scenario under testing [[link]](https://drive.google.com/file/d/1h2DoY7kCmZLnBh2ttD5ZbnoSAHUNVSdn/view?usp=sharing)
 
-# j. LICENSE
+#### Scenario 3 Video [[link]](https://drive.google.com/file/d/18yqCbzED_H9MR-PKZ7Ri4imRvHL9sclz/view?usp=sharing)
+
+#### Scenario 2 Video [[link]](https://drive.google.com/file/d/1N3_DMFN2B2JJavu1VajSF_WvZa_i0CeX/view?usp=sharing)
+
+#### Scenario 1 Video [[link]](https://drive.google.com/file/d/16ZBhUAti659bQh3IR_0s_TT6xBANPX9x/view?usp=sharing)
+
+#### Opening Unity Project Video [[link]](https://drive.google.com/file/d/16iLVtsC29Wp9RyhF5cUQ0yMUbJCx-Nl0/view?usp=sharing)
+
+#### Documentation Video [[link]](https://drive.google.com/file/d/1fTIsD1m1qx0rkB-2y076hkf2bi00-U7O/view?usp=sharing)
+
+#### Unity Account Video [[link]](https://drive.google.com/file/d/1JxhwFSFr20KYXteRk9xQh-OJWBcP9Ps4/view?usp=sharing)
+
+# LICENSE
 
 Apache License
 Version 2.0, January 2004
