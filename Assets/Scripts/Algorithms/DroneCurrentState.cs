@@ -569,7 +569,7 @@ public class DroneCurrentState : MonoBehaviour
     {
         
         // Set the permissible error for ReturnToHub
-        permissibleErrorToGetTarget = 0.25f;
+        permissibleErrorToGetTarget = 0.50f;
 
         // If the target is not reached
         if(droneRouthPlanning.flagTargetReached == false)

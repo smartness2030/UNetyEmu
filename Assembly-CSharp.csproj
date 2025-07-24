@@ -59,37 +59,48 @@
     <UnityVersion>2022.3.22f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Users\mauri\.vscode\extensions\visualstudiotoolsforunity.vstuc-1.1.1\Analyzers\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="C:\Users\mauri\.vscode\extensions\visualstudiotoolsforunity.vstuc-1.1.2\Analyzers\Microsoft.Unity.Analyzers.dll" />
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.22f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.SourceGenerators.dll" />
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.22f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\GeneralManagementScripts\CarAndDronesLogger.cs" />
     <Compile Include="Assets\Resources\UI\UIAllDisplay.cs" />
     <Compile Include="Assets\Scripts\GetFeatures\GetCommunicationFeatures.cs" />
     <Compile Include="Assets\Scripts\Algorithms\DroneSimpleRoutePlanning.cs" />
     <Compile Include="Assets\Scripts\Algorithms\DroneCurrentState.cs" />
     <Compile Include="Assets\Scripts\Network\EncodeDecode.cs" />
     <Compile Include="Assets\Scripts\GetFeatures\GetDepthCameraFeatures.cs" />
+    <Compile Include="Assets\Scripts\GeneralManagementScripts\MissionLoggerCarAndDrones.cs" />
     <Compile Include="Assets\Scripts\Network\DroneSimpleCommunication.cs" />
     <Compile Include="Assets\Scripts\Network\BaseStationMininetWifi.cs" />
     <Compile Include="Assets\Scripts\Sensors\DepthCamera.cs" />
     <Compile Include="Assets\Scripts\GeneralManagementScripts\MissionInfo.cs" />
+    <Compile Include="Assets\Scripts\GeneralManagementScripts\LogisticCenterWithVehicles.cs" />
+    <Compile Include="Assets\Scripts\Algorithms\CarCurrentState.cs" />
     <Compile Include="Assets\Scripts\CameraSettings\CityView.cs" />
+    <Compile Include="Assets\Scripts\Sensors\DroneLandingPad.cs" />
     <Compile Include="Assets\Scripts\GetFeatures\GetCarFeatures.cs" />
     <Compile Include="Assets\Scripts\Network\SimpleBaseStation.cs" />
     <Compile Include="Assets\Scripts\Algorithms\DroneInternalLogistics2.cs" />
+    <Compile Include="Assets\Scripts\Network\VehicleCommunication.cs" />
+    <Compile Include="Assets\Scripts\Network\BaseStationSetMissionsToVehicles.cs" />
     <Compile Include="Assets\Scripts\GeneralManagementScripts\LogisticCenterWithMininetWifi.cs" />
     <Compile Include="Assets\Scripts\PlayersDynamics\MoveDroneFromKeyboard.cs" />
     <Compile Include="Assets\Scripts\PlayersDynamics\DroneJoinedToPackage.cs" />
+    <Compile Include="Assets\Scripts\PathPlanning\CarPathPlanning.cs" />
     <Compile Include="Assets\Scripts\CameraSettings\FollowCamera.cs" />
+    <Compile Include="Assets\Scripts\PlayersDynamics\CarDynamics.cs" />
     <Compile Include="Assets\Scripts\GetFeatures\GetDroneFeatures.cs" />
     <Compile Include="Assets\Scripts\Network\GetVmIp.cs" />
     <Compile Include="Assets\Scripts\GetFeatures\GetObjectFeatures.cs" />
     <Compile Include="Assets\Scripts\GetFeatures\GetLidarFeatures.cs" />
+    <Compile Include="Assets\Scripts\Algorithms\CarPIDControlled.cs" />
     <Compile Include="Assets\Scripts\PlayersDynamics\DroneDynamics.cs" />
     <Compile Include="Assets\Scripts\GeneralManagementScripts\MissionLogger.cs" />
     <Compile Include="Assets\Scripts\Network\DroneCommunication.cs" />
     <Compile Include="Assets\Resources\UI\InfoPanelController.cs" />
+    <Compile Include="Assets\Scripts\Algorithms\CarInternalLogistics.cs" />
     <Compile Include="Assets\Scripts\Network\BaseStationUnity.cs" />
     <Compile Include="Assets\Scripts\Algorithms\DroneInternalLogistics.cs" />
     <Compile Include="Assets\Scripts\GeneralSettings\ReadOnlyAttribute.cs" />
@@ -98,8 +109,10 @@
     <Compile Include="Assets\Scripts\Algorithms\DronePIDControlled.cs" />
     <Compile Include="Assets\Scripts\Sensors\LidarSensor.cs" />
     <Compile Include="Assets\Scripts\Controllers\PID.cs" />
+    <Compile Include="Assets\Scripts\PathPlanning\DronePathPlanning.cs" />
     <Compile Include="Assets\Scripts\Algorithms\DroneSimpleRoutePlanningAndObstacleAvoidance.cs" />
     <Compile Include="Assets\Scripts\GeneralManagementScripts\MissionGenerator.cs" />
+    <Compile Include="Assets\Scripts\Network\CarCommunication.cs" />
     <Compile Include="Assets\Scripts\GeneralSettings\ObjectSetupScript.cs" />
     <Compile Include="Assets\Resources\Animations\Drone2Animation.cs" />
     <Compile Include="Assets\Scripts\Algorithms\DroneRouthPlanning.cs" />
@@ -471,6 +484,18 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@3.2.1\Runtime\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Android.Types">
+      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.22f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Android.Gradle">
+      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.22f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Gradle.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Android.GradleProject">
+      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.22f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.GradleProject.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="netstandard">

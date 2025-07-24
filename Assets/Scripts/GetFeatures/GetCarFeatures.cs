@@ -22,6 +22,13 @@ public class GetCarFeatures : MonoBehaviour
 {
     // Car Features:
     [Header("Car Features")]
-    [ReadOnly] public float unladenWeight;
-    [ReadOnly] public float maxSpeedManufacturer;
+    [ReadOnly] public float weight;
+    [ReadOnly] public float motorForce;
+    [ReadOnly] public float brakeForce;
+    [ReadOnly] public float maxSteerAngle;
+    [ReadOnly] public float approxMaxDrivingTime;
+    [ReadOnly] public float maxBatteryCapacity;
+    [ReadOnly] public float batteryVoltage;
+    [ReadOnly] public float batteryStartPercentage;
+    [ReadOnly] public float maxSpeedAllowed;
 }

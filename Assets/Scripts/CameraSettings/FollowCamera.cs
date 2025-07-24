@@ -20,11 +20,11 @@ using UnityEngine; // Library to use in MonoBehaviour classes
 // Class to control the main camera that follows the players
 public class FollowCamera : MonoBehaviour
 {
+
     // -----------------------------------------------------------------------------------------------------
     // Public variables that appear in the Inspector:
-    
+
     public string typeObjectName; // Name of the game object type (TAG) that the camera will follow
-    public Vector3 offSetPos; // Desired position of the camera with an offset relative to the drone's rotation on all axes
     public float offSetRot; // Desired rotation of the camera with an offset relative to the drone's rotation on all axes
     public float smoothSpeed; // Smoothness of camera movement
     public float rotationSmoothSpeed; // Smoothness of camera rotation
@@ -37,34 +37,37 @@ public class FollowCamera : MonoBehaviour
     // -----------------------------------------------------------------------------------------------------
     // Private variables of this class:
 
-    private Transform target; // Reference to the target object to follow
-    private int numDrone = 0; // Index of the drone to follow
-    private bool inCityViewMode = false; // Control if the camera is in city view mode
-    private Vector3 cityViewPositionOffset = Vector3.zero; // Offset for the city view camera position
-    private float rotationX = 0f; // Accumulated rotation on the X axis for city view
-    private float rotationY = 0f; // Accumulated rotation on the Y axis for city view
-    private bool enableMouseRotation = false; // Control if the mouse rotation is enabled
+    [ReadOnly] public Vector3 offSetPos; // Desired position of the camera with an offset relative to the drone's rotation on all axes
+    public Transform target; // Reference to the target object to follow
+    public int numVehicle = 0; // Index of the drone to follow
+    public bool inCityViewMode = false; // Control if the camera is in city view mode
+    public Vector3 cityViewPositionOffset = Vector3.zero; // Offset for the city view camera position
+    public float rotationX = 0f; // Accumulated rotation on the X axis for city view
+    public float rotationY = 0f; // Accumulated rotation on the Y axis for city view
+    public bool enableMouseRotation = false; // Control if the mouse rotation is enabled
 
-    private GameObject[] targetObjects; // Array of game objects with the specified tag
-    private GameObject targetObject; // Reference to the target object to follow
+    public GameObject[] targetObjects; // Array of game objects with the specified tag
+    public GameObject targetObject; // Reference to the target object to follow
+    public string[] objectTypes = { "Drone", "Car" }; // Array of object types to cycle through
+    public int currentTypeIndex = 0; // Current index in objectTypes array
 
-    private Vector3 desiredPosition; // Desired position of the camera
-    private Vector3 smoothedPosition; // Smoothed position of the camera
-    private Quaternion fixedRotationX; // Fixed rotation of the camera in the X axis
-    private Quaternion finalRotation; // Final rotation of the camera
-    private Quaternion smoothedRotation; // Smoothed rotation of the camera
+    public Vector3 desiredPosition; // Desired position of the camera
+    public Vector3 smoothedPosition; // Smoothed position of the camera
+    public Quaternion fixedRotationX; // Fixed rotation of the camera in the X axis
+    public Quaternion finalRotation; // Final rotation of the camera
+    public Quaternion smoothedRotation; // Smoothed rotation of the camera
 
-    private float currentMoveSpeed; // Current speed of camera movement
-    private float adjustedMoveSpeed; // Adjusted speed of camera movement
-    private float mouseX; // Mouse movement on the X axis
-    private float mouseY; // Mouse movement on the Y axis
+    public float currentMoveSpeed; // Current speed of camera movement
+    public float adjustedMoveSpeed; // Adjusted speed of camera movement
+    public float mouseX; // Mouse movement on the X axis
+    public float mouseY; // Mouse movement on the Y axis
 
     // -----------------------------------------------------------------------------------------------------
     // Start is called before the first frame update:
 
     void Start()
     {
-        
+
         // Make sure the cursor is unlocked and visible at startup
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -75,6 +78,11 @@ public class FollowCamera : MonoBehaviour
         // Set the initial value of the player name
         playerName = "";
 
+        // Initialize the camera position offset
+        offSetPos = new Vector3(0f, 1.5f, -3f);
+        
+        // Initialize with the first object type
+        typeObjectName = objectTypes[currentTypeIndex];
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -82,34 +90,96 @@ public class FollowCamera : MonoBehaviour
 
     void Update()
     {
-        
+
         // Change to player view mode
         if (Input.GetKeyDown(KeyCode.M))
         {
-            
+
             // Flag to indicate that the camera is not in city view mode
             inCityViewMode = false;
-            
+
             // Keep the cursor unlocked and visible
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
         }
 
-        // Next or previous player to follow
-        if (Input.GetKeyDown(KeyCode.C)) numDrone += 1;
-        if (Input.GetKeyDown(KeyCode.V)) numDrone -= 1;
-        
+        // Next or previous object to follow
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+
+            // Try to move to next object of current type
+            numVehicle++;
+            targetObjects = GameObject.FindGameObjectsWithTag(typeObjectName);
+
+            // If we've reached the end of current type's objects
+            if (numVehicle >= targetObjects.Length)
+            {
+                // Move to next type
+                currentTypeIndex = (currentTypeIndex + 1) % objectTypes.Length;
+                typeObjectName = objectTypes[currentTypeIndex];
+
+                targetObjects = GameObject.FindGameObjectsWithTag(typeObjectName);
+
+                if (targetObjects.Length > 0)
+                {
+                    numVehicle = 0; // Reset the index to the first object of the new type
+                }
+                else
+                {
+                    currentTypeIndex = (currentTypeIndex - 1 + objectTypes.Length) % objectTypes.Length;
+                    typeObjectName = objectTypes[currentTypeIndex];
+                    numVehicle = -1; // No objects of this type found, reset to -1 to avoid out of bounds
+                }
+
+            }
+
+        }
+
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+
+            // Try to move to previous object of current type
+            numVehicle--;
+            targetObjects = GameObject.FindGameObjectsWithTag(typeObjectName);
+
+            // If we've gone below the first index of the current type
+            if (numVehicle < 0)
+            {
+
+                // Move to the previous type
+                currentTypeIndex = (currentTypeIndex - 1 + objectTypes.Length) % objectTypes.Length;
+                typeObjectName = objectTypes[currentTypeIndex];
+
+                targetObjects = GameObject.FindGameObjectsWithTag(typeObjectName);
+
+                if (targetObjects.Length > 0)
+                {
+                    numVehicle = targetObjects.Length - 1; // Go to the last object of the new type
+                }
+                else
+                {
+                    // No objects of this type found, return to the original type
+                    currentTypeIndex = (currentTypeIndex + 1) % objectTypes.Length;
+                    typeObjectName = objectTypes[currentTypeIndex];
+                    targetObjects = GameObject.FindGameObjectsWithTag(typeObjectName);
+                    numVehicle = targetObjects.Length > 0 ? targetObjects.Length - 1 : -1; // Reset to -1 if no objects found
+                }
+                
+            }
+
+        }
+
         // Change to city view mode
         if (Input.GetKeyDown(KeyCode.N))
         {
-            
+
             // Flag to indicate that the camera is in city view mode
             inCityViewMode = true;
 
             // Set the configuration of the city view
             SetCityView();
-            
+
             // Keep the cursor unlocked and visible
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -149,11 +219,11 @@ public class FollowCamera : MonoBehaviour
             {
                 
                 // Limit the index to the range of the array
-                if (numDrone >= targetObjects.Length) numDrone = targetObjects.Length - 1;
-                if (numDrone < 0) numDrone = 0;
+                if (numVehicle >= targetObjects.Length) numVehicle = targetObjects.Length - 1;
+                if (numVehicle < 0) numVehicle = 0;
                 
                 // Get the target object to follow
-                targetObject = targetObjects[numDrone];
+                targetObject = targetObjects[numVehicle];
                 
                 // Get the name of the player
                 playerName = targetObject.name;
@@ -166,7 +236,7 @@ public class FollowCamera : MonoBehaviour
         }
         catch (System.Exception)
         {
-            numDrone = 0; // Reset the index
+            numVehicle = 0; // Reset the index
             playerName = ""; // Set the player name to empty
         }
 
@@ -178,6 +248,23 @@ public class FollowCamera : MonoBehaviour
     void moveToPosition()
     {
         
+        // Set the offset position accordingly
+        if (typeObjectName == "Drone")
+        {
+            offSetPos = new Vector3(0f, 1.5f, -3f);
+        }
+        else
+        {
+            if (typeObjectName == "Car")
+            {
+                offSetPos = new Vector3(0f, 4.5f, -9f);
+            }
+            else
+            {
+                offSetPos = new Vector3(0f, 1.5f, -3f);
+            }
+        }
+
         // Desired camera position with a displacement relative to the rotation of the drone in all axes
         desiredPosition = target.position + target.rotation * offSetPos;
         smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);

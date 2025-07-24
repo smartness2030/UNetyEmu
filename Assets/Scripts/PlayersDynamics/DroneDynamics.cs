@@ -105,12 +105,21 @@ public class DroneDynamics : MonoBehaviour
     // Flag to shutdown the drone
     public bool flagDroneShutdown = false;
 
+    // Reference to the DronePathPlanning script
+    private DronePathPlanning dronePathPlanning;
+
+    // Flag to indicate if the drone has landed in the truck
+    private bool flagDroneLandedInTruck;
+
     // -----------------------------------------------------------------------------------------------------
     // Start is called before the first frame update:
 
     void Start()
     {
-        
+
+        // Initialize the flag to indicate if the drone has landed in the truck
+        flagDroneLandedInTruck = false; // Initialize the flag to false
+
         // Get the Rigidbody component of the drone
         rb = GetComponent<Rigidbody>();
 
@@ -140,6 +149,9 @@ public class DroneDynamics : MonoBehaviour
         energyTotal = (batteryCapacity * batteryVoltage) / 1000f;
         hoverPower = energyTotal / (maxFlightTime / 3600f);
 
+        // Initialize the drone path planning component
+        dronePathPlanning = GetComponent<DronePathPlanning>(); // Get the DronePathPlanning script
+        
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -147,7 +159,34 @@ public class DroneDynamics : MonoBehaviour
 
     void FixedUpdate()
     {
+
+        // If the dronePathPlanning script exists, check if the drone is landed in the truck
+        if (dronePathPlanning != null)
+        {
+
+            // Get the flag to indicate if the drone has landed in the truck
+            flagDroneLandedInTruck = dronePathPlanning.droneLandedInTruck;
+
+            // If the drone is landed in the truck, set the flag to shutdown the drone
+            if (flagDroneLandedInTruck)
+            {
+
+                flagDroneShutdown = true; // Set the flag to shutdown the drone
+
+                throttle = 0f; // Stop the throttle
+                pitch = 0f; // Stop the pitch
+                roll = 0f; // Stop the roll
+                yaw = 0f; // Stop the yaw
+
+                totalForce = Vector3.zero; // Stop the total force
+                totalTorque = Vector3.zero; // Stop the total torque
+                yawTorque = Vector3.zero; // Stop the yaw torque
+
+                return;
+            }
         
+        }
+
         // Check the battery level of the drone
         CheckBatteryLevel();
 
@@ -196,9 +235,9 @@ public class DroneDynamics : MonoBehaviour
         }
                 
         // If the drone collides with the Ground or DronePads, stop the drone's movements:
-        if ( collision.gameObject.CompareTag("DronePadStart") || collision.gameObject.CompareTag("DronePadCustomer") ||
+        if ( collision.gameObject.CompareTag("VehiclePadStart") || collision.gameObject.CompareTag("DronePadCustomer") ||
             collision.gameObject.CompareTag("DronePadBatteryRecharge") || collision.gameObject.CompareTag("DronePadPackage") ||
-            collision.gameObject.CompareTag("Ground") )
+            collision.gameObject.CompareTag("DronePadTruck") || collision.gameObject.CompareTag("Ground") )
         {
             pitch = 0f; // Stop the pitch movement
             roll = 0f; // Stop the roll movement

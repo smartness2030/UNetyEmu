@@ -18,14 +18,16 @@
 import os
 import csv
 import matplotlib.pyplot as plt
+from datetime import datetime
 
 # -----------------------------------------------------------------------------------------------------
 
 # CSV file names
-csv_filenames = ["DRO001A_rssi_20250311_133338", "DRO002B_rssi_20250311_133338"]
+csv_filenames = ["DRO001A_rssi", "DRO002B_rssi"]
 
 # -----------------------------------------------------------------------------------------------------
 
+# Function to read RSSI CSV files
 def read_rssi_files(csv_filenames):
     """Reads specified CSV files and extracts RSSI data."""
     rssi_data = {}
@@ -45,6 +47,7 @@ def read_rssi_files(csv_filenames):
 
 # -----------------------------------------------------------------------------------------------------
 
+# Function to plot RSSI data
 def plot_rssi_data(rssi_data, names, output_image_path):
     """Plot RSSI data for all selected files and save the image."""
     plt.figure(figsize=(10, 6))  # Set the figure size
@@ -62,14 +65,21 @@ def plot_rssi_data(rssi_data, names, output_image_path):
     plt.tick_params(axis='x')
     plt.tick_params(axis='y')
 
+    # Get the current timestamp for the filename
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+
+    # Create the filename with the prefix "RSSI" and the timestamp
+    output_image_final_path = f"RSSI_{timestamp}"
+
     # Save the plot as an image
-    plt.savefig(output_image_path+'.png', dpi=300)
+    plt.savefig(output_image_final_path+'.png', dpi=300)
     plt.show()
 
-    print(f"Plot saved as {output_image_path}")
+    print(f"Plot saved as {output_image_final_path}")
 
 # -----------------------------------------------------------------------------------------------------
 
+# Main function
 def main():
     
     # Initialize the list of RSSI times
@@ -95,5 +105,6 @@ def main():
 
 # -----------------------------------------------------------------------------------------------------
 
+# Entry point for the script
 if __name__ == "__main__":
     main()

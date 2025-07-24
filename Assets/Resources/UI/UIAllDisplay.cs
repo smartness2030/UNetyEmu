@@ -37,7 +37,7 @@ public class UIAllDisplay : MonoBehaviour
     public TextMeshProUGUI batteryText;
     public Image batteryImage;
 
-    // Variables to display the wifi signal
+    // Variables to display the wifi signal strength indicators
     public Image wifi1White;
     public Image wifi2White;
     public Image wifi3White;
@@ -60,6 +60,9 @@ public class UIAllDisplay : MonoBehaviour
 
     // Variables to display the player current status
     public TextMeshProUGUI currentStatusText;
+
+    // Variables to display the player name
+    public string playerName;
 
     // -----------------------------------------------------------------------------------------------------
     // Private variables of this class:
@@ -98,9 +101,6 @@ public class UIAllDisplay : MonoBehaviour
     private float maxAltitudeScale;
     private float minAltitudeScale;
 
-    // Variables to get the player name
-    private string playerName;
-
     // Variables to get the player current status
     private string playerCurrentStatus;
 
@@ -121,6 +121,15 @@ public class UIAllDisplay : MonoBehaviour
     private DroneCommunication droneCommunication;
     private DroneCurrentState droneCurrentState;
     private Rigidbody rb;
+    
+    // Variables to get the CarDynamics component of the player object
+    private CarDynamics carDynamics;
+    private VehicleCommunication vehicleCommunication;
+
+    // Variables to store the current positions of the altitude and speed scale graphs
+    private Vector2 currentAltitudePosition;
+    private Vector2 currentSpeedPosition;
+
 
     // -----------------------------------------------------------------------------------------------------
     // Start is called before the first frame update:
@@ -168,6 +177,11 @@ public class UIAllDisplay : MonoBehaviour
 
         // Get the followCamera script of the main camera
         followCamera = mainCameraScript.GetComponent<FollowCamera>();
+
+        // Set the current altitude and speed positions to the minimum values
+        currentAltitudePosition = new Vector2(0, altitudeMappedValue);
+        currentSpeedPosition = new Vector2(0, speedMappedValue);
+
 
     }
 
@@ -229,14 +243,20 @@ public class UIAllDisplay : MonoBehaviour
         if ((altitudeText != null) && (altitudeScaleGraphTransform != null))
         {
             altitudeText.text = playerAltitude;
-            altitudeScaleGraphTransform.anchoredPosition = new Vector2(0, altitudeMappedValue);
+
+            // Smooth interpolation to the new position
+            currentAltitudePosition = Vector2.Lerp(currentAltitudePosition, new Vector2(0, altitudeMappedValue), 10f * Time.deltaTime);
+            altitudeScaleGraphTransform.anchoredPosition = currentAltitudePosition;
         }
 
         // If the speedText and speedScaleGraphTransform are not null, update the speed in the UI elements
         if ((speedText != null) && (speedScaleGraphTransform != null))
         {
             speedText.text = playerSpeed;
-            speedScaleGraphTransform.anchoredPosition = new Vector2(0, speedMappedValue);
+
+            // Smooth interpolation to the new position
+            currentSpeedPosition = Vector2.Lerp(currentSpeedPosition, new Vector2(0, speedMappedValue), 10f * Time.deltaTime);
+            speedScaleGraphTransform.anchoredPosition = currentSpeedPosition;
         }
 
         // If the playerText and currentStatusText are not null, update the player name and current status in the UI elements
@@ -262,12 +282,24 @@ public class UIAllDisplay : MonoBehaviour
             try
             {
 
-                // Get the DroneDynamics component of the player object
-                droneDynamics = playerObject.GetComponent<DroneDynamics>();
+                if(followCamera.typeObjectName == "Drone")
+                {
+                    // Get the DroneDynamics component of the player object
+                    droneDynamics = playerObject.GetComponent<DroneDynamics>();
+                    
+                    // Get the battery level
+                    batteryLevel = droneDynamics.batteryLevel;
+                }
 
-                // Get the battery level
-                batteryLevel = droneDynamics.batteryLevel;
+                if(followCamera.typeObjectName == "Car")
+                {
+                    // Get the CarController component of the player object
+                    carDynamics = playerObject.GetComponent<CarDynamics>();
 
+                    // Get the battery level
+                    batteryLevel = carDynamics.batteryLevel;
+                }
+                
                 // Get the battery level percentage
                 batteryLevelPercentage = (int)batteryLevel;
 
@@ -289,37 +321,38 @@ public class UIAllDisplay : MonoBehaviour
             {
 
                 // Get the DroneCommunication component of the player object
-                droneCommunication = playerObject.GetComponent<DroneCommunication>();
+                //droneCommunication = playerObject.GetComponent<DroneCommunication>();
+                vehicleCommunication = playerObject.GetComponent<VehicleCommunication>();
 
                 // Get the wifi signal
-                wifiSignal = droneCommunication.droneWifiSignal;
-                
+                wifiSignal = vehicleCommunication.vehicleWifiSignal;
+                                
             }
-            catch (Exception){}
+            catch (Exception) { }
 
             // Show the wifi signal in the UI elements
-            if(wifiSignal < 0.1f) // no signal
+            if(wifiSignal < 0.01f) // no signal
             {
                 wifi1Flag = false;
                 wifi2Flag = false;
                 wifi3Flag = false;
                 wifi4Flag = false;
             }
-            else if(wifiSignal < 0.25f) // low signal
+            else if(wifiSignal < 0.1f) // low signal
             {
                 wifi1Flag = true;
                 wifi2Flag = false;
                 wifi3Flag = false;
                 wifi4Flag = false;
             }
-            else if(wifiSignal < 0.5f) // medium signal
+            else if(wifiSignal < 0.25f) // medium signal
             {
                 wifi1Flag = true;
                 wifi2Flag = true;
                 wifi3Flag = false;
                 wifi4Flag = false;
             }
-            else if(wifiSignal < 0.75f) // good signal
+            else if(wifiSignal < 0.50f) // good signal
             {
                 wifi1Flag = true;
                 wifi2Flag = true;
@@ -392,6 +425,9 @@ public class UIAllDisplay : MonoBehaviour
                 
                 // Get the altitude of the player
                 altitudeScale = playerObject.transform.position.y;
+                
+                // If the altitude is negative, set it to zero
+                if (altitudeScale < 0) altitudeScale = 0;
 
                 // Set the altitude string for the UI element
                 playerAltitude = altitudeScale.ToString("F2");

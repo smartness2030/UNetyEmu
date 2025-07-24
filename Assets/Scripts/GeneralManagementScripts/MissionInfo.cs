@@ -96,6 +96,29 @@ public class MissionInfo : MonoBehaviour
     }
 
     // -----------------------------------------------------------------------------------------------------
+    // Class to store the car's information:
+
+    [Serializable]
+    public class CarInfo
+    {
+        public string playerName;
+        public string currentTime;
+        public Location positionOrientation;
+        public float batteryLevel;
+        public string currentState;
+        public string missionId;
+        public string missionStatus;
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // Function to decode the car's information from a JSON string:
+    
+    public static CarInfo DecodeCarInfo(string json)
+    {
+        return JsonUtility.FromJson<CarInfo>(json);
+    }
+
+    // -----------------------------------------------------------------------------------------------------
     // Function to encode the mission details into a JSON string:
 
     public static string EncodeMissionInfo(Mission mission)

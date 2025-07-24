@@ -32,7 +32,7 @@ public class GetVmIp
         
         // Use the Unity project's relative path instead of a hardcoded path
         string scriptPath = Application.dataPath + "/Scripts/Network/get_vm_ip.ps1";
-        UnityEngine.Debug.Log($"Executing script: {scriptPath}");
+        //UnityEngine.Debug.Log($"Executing script: {scriptPath}");
 
         // Create the PowerShell command
         string command = $"& '{scriptPath}' -VMName '{vmName}' -AdapterIndex {adapterIndex}";
@@ -53,7 +53,7 @@ public class GetVmIp
         {
             
             // Log the start of the process
-            UnityEngine.Debug.Log("Getting the VM's IP...");
+            UnityEngine.Debug.Log("Getting the IP from Mininet-WiFi VM ...");
 
             // Start the PowerShell process
             using (Process process = Process.Start(processStartInfo))
@@ -69,7 +69,7 @@ public class GetVmIp
                 // Read the output and error streams
                 string output = process.StandardOutput.ReadToEnd();
                 string error = process.StandardError.ReadToEnd();
-                UnityEngine.Debug.Log($"Output:\n{output}");
+                //UnityEngine.Debug.Log($"Output:\n{output}");
 
                 // Log any errors
                 if (!string.IsNullOrEmpty(error))
@@ -86,7 +86,7 @@ public class GetVmIp
                 // Pass extracted IP to BaseStation
                 if (!string.IsNullOrEmpty(extractedIp))
                 {
-                    UnityEngine.Debug.Log($"Extracted VM IP: {extractedIp}");
+                    //UnityEngine.Debug.Log($"Extracted VM IP: {extractedIp}");
                     baseStation.SetMnWifiVmIp(extractedIp);
                 }
                 else
@@ -95,7 +95,7 @@ public class GetVmIp
                 }
 
                 // Log the end of the process
-                UnityEngine.Debug.Log("PowerShell process finished.");
+                //UnityEngine.Debug.Log("PowerShell process finished.");
 
             }
         }

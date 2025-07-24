@@ -139,7 +139,7 @@ public class DronePIDControlled : MonoBehaviour
         yError = targetPosition.y - currentY;
 
         // Set the PID control parameters, may need to be optimized
-        KpThrottle = Mathf.Lerp(2.5f, 1.5f, Mathf.Clamp01( MathF.Abs(rb.velocity.y) / adjustedVariableFromVelocity ));
+        KpThrottle = Mathf.Lerp(1.5f, 1.5f, Mathf.Clamp01( MathF.Abs(rb.velocity.y) / adjustedVariableFromVelocity ));
         KiThrottle = Mathf.Lerp(0.0f, 0.1f, Mathf.Clamp01( MathF.Abs(yError) / adjustedVariableFromVelocity ));
         KdThrottle = Mathf.Lerp(0.5f, 1.0f, Mathf.Clamp01( MathF.Abs(rb.velocity.y) / adjustedVariableFromVelocity ));
 
@@ -166,7 +166,7 @@ public class DronePIDControlled : MonoBehaviour
         xError = targetPosition.x - currentX;
 
         // Set the PID control parameters for pitch, may need to be optimized
-        KpPitch = Mathf.Lerp(4f, 0.5f, Mathf.Clamp01( MathF.Abs(rb.velocity.z) / adjustedVariableFromVelocity ));
+        KpPitch = Mathf.Lerp(3f, 0.5f, Mathf.Clamp01( MathF.Abs(rb.velocity.z) / adjustedVariableFromVelocity ));
         KiPitch = Mathf.Lerp(0.0f, 0.1f, Mathf.Clamp01( MathF.Abs(zError) / adjustedVariableFromVelocity ));
         KdPitch = Mathf.Lerp(4.0f, 3.0f, Mathf.Clamp01( MathF.Abs(rb.velocity.z) / adjustedVariableFromVelocity ));
 

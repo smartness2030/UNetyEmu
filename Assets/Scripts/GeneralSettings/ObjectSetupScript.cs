@@ -46,6 +46,7 @@ public class ObjectSetupScript : MonoBehaviour
     // Internal variable of the structure called "playerFeatures"
     [System.Serializable] public class PlayerFeatures
     {
+        public float weight;
         public float unladenWeight;
         public float approxMaxFlightTime;
         public float maxBatteryCapacity;
@@ -56,6 +57,11 @@ public class ObjectSetupScript : MonoBehaviour
         public float maxSpeedManufacturer;
         public float maximumTiltAngle;
         public float propellerMaxRPM;
+        public float motorForce;
+        public float brakeForce;
+        public float maxSteerAngle;
+        public float approxMaxDrivingTime;
+        public float maxSpeedAllowed;
     }
 
     // Internal variable of the structure called "lidarFeatures"
@@ -249,64 +255,104 @@ public class ObjectSetupScript : MonoBehaviour
 
                                 // Find the child object
                                 GameObject playerStartChildObject = playerStart.transform.GetChild(j).gameObject;
+                                playerStartChildObject.tag = "VehiclePadStart";
                                 
-                                    // While the number of players requested is greater than the number of child objects of the parent object
-                                    if ( (j + 1) <= numberOfPlayersPerGroup[i] )
+                                // While the number of players requested is greater than the number of child objects of the parent object
+                                if ((j + 1) <= numberOfPlayersPerGroup[i])
+                                {
+
+                                    // Create a vector for the initial position
+                                    Vector3 position = new Vector3(
+                                        playerStartChildObject.transform.position.x,
+                                        playerStartChildObject.transform.position.y,
+                                        playerStartChildObject.transform.position.z
+                                    );
+
+                                    // Create a vector for initial orientation
+                                    Quaternion rotation = Quaternion.Euler(
+                                        playerStartChildObject.transform.eulerAngles.x,
+                                        playerStartChildObject.transform.eulerAngles.y,
+                                        playerStartChildObject.transform.eulerAngles.z
+                                    );
+
+                                    // Instantiate the player in the specified position and orientation
+                                    GameObject instantiatedObject = Instantiate(prefab, position, rotation);
+
+                                    // Set all the features of the player
+                                    SetObjectFeatures(instantiatedObject, obj);
+
+                                    // If the player is a drone
+                                    if (obj.type == "Drone")
                                     {
-                                        
+
+                                        // Set the name of the instantiated object
+                                        instantiatedObject.name = "DRO" + currentID.ToString("D3") + playerGroupNames[i];
+
+                                        // If the player has internal scripts
+                                        SetInternalScriptsDrone(instantiatedObject, obj);
+
+                                        // Set the drone features
+                                        SetDroneFeatures(instantiatedObject, obj);
+
+                                    }
+
+                                    // If the player is a car
+                                    if (obj.type == "Car")
+                                    {
+
+                                        // Set the name of the instantiated object
+                                        instantiatedObject.name = "CAR" + currentID.ToString("D3") + playerGroupNames[i];
+
+                                        // Load the prefab for the drone pad that will be used by the truck
+                                        GameObject prefabDronePadForTruck = Resources.Load<GameObject>("Prefabs/prefabDronePadForTruck_red");
+
                                         // Create a vector for the initial position
-                                        Vector3 position = new Vector3(
-                                            playerStartChildObject.transform.position.x, 
-                                            playerStartChildObject.transform.position.y, 
+                                        Vector3 positionDronePadForTruck = new Vector3(
+                                            playerStartChildObject.transform.position.x,
+                                            playerStartChildObject.transform.position.y,
                                             playerStartChildObject.transform.position.z
                                         );
 
                                         // Create a vector for initial orientation
-                                        Quaternion rotation = Quaternion.Euler(
-                                            playerStartChildObject.transform.eulerAngles.x, 
-                                            playerStartChildObject.transform.eulerAngles.y, 
+                                        Quaternion rotationDronePadForTruck = Quaternion.Euler(
+                                            playerStartChildObject.transform.eulerAngles.x,
+                                            playerStartChildObject.transform.eulerAngles.y,
                                             playerStartChildObject.transform.eulerAngles.z
                                         );
 
                                         // Instantiate the player in the specified position and orientation
-                                        GameObject instantiatedObject = Instantiate(prefab, position, rotation);
-                                        
-                                        // Set all the features of the player
-                                        SetObjectFeatures(instantiatedObject, obj);
+                                        GameObject instantiatedObjectDronePadForTruck = Instantiate(prefabDronePadForTruck, positionDronePadForTruck, rotationDronePadForTruck);
 
-                                        // If the player is a drone
-                                        if(obj.type == "Drone"){
-                                            playerStartChildObject.tag = "DronePadStart";
-                                            instantiatedObject.name = "DRO"+currentID.ToString("D3")+playerGroupNames[i];
-                                            SetDroneFeatures(instantiatedObject, obj);
-                                        } 
+                                        // Set the name and tag of the instantiated drone pad for truck
+                                        instantiatedObjectDronePadForTruck.name = "prefabPadTruck_" + currentID.ToString("D3");
+                                        instantiatedObjectDronePadForTruck.tag = "DronePadTruck";
+                                        instantiatedObjectDronePadForTruck.transform.SetParent(instantiatedObject.transform);
+                                        instantiatedObjectDronePadForTruck.transform.localPosition = new Vector3(0f, 1.335f, -1.5f);
 
-                                        // If the player is a car
-                                        if(obj.type == "Car"){
-                                            playerStartChildObject.tag = "CarPadStart";
-                                            instantiatedObject.name = "CAR"+currentID.ToString("D3")+playerGroupNames[i];
-                                            SetCarFeatures(instantiatedObject, obj);
-                                        } 
-
-                                        // If the player has a target game object
-                                        if(obj.addTargetGameObject == true) SetTargetGameObject(instantiatedObject);
+                                        // Set the car features
+                                        SetCarFeatures(instantiatedObject, obj);
 
                                         // If the player has internal scripts
-                                        SetInternalScripts(instantiatedObject, obj);
-
-                                        // If the player has a lidar sensor
-                                        SetLidarFeatures(instantiatedObject, obj);
-                                        
-                                        // If the player has a depth camera sensor
-                                        SetDepthCameraFeatures(instantiatedObject, obj);
-
-                                        // If the player has communication features
-                                        SetCommunicationFeatures(instantiatedObject, obj);
-
-                                        // Add new ID number for the next player
-                                        currentID++;
+                                        SetInternalScriptsCar(instantiatedObject, obj);
 
                                     }
+
+                                    // If the player has a target game object
+                                    if (obj.addTargetGameObject == true) SetTargetGameObject(instantiatedObject);
+
+                                    // If the player has a lidar sensor
+                                    SetLidarFeatures(instantiatedObject, obj);
+
+                                    // If the player has a depth camera sensor
+                                    SetDepthCameraFeatures(instantiatedObject, obj);
+
+                                    // If the player has communication features
+                                    SetCommunicationFeatures(instantiatedObject, obj);
+
+                                    // Add new ID number for the next player
+                                    currentID++;
+
+                                }
 
                             }
 
@@ -403,10 +449,37 @@ public class ObjectSetupScript : MonoBehaviour
     void SetCarFeatures(GameObject instantiatedObject, ObjectData obj)
     {
         
+        // Set the mass in the Rigidbody
+        Rigidbody rb = instantiatedObject.GetComponent<Rigidbody>();
+        if(obj.playerFeatures.weight == 0) rb.mass = 1500.0f;
+        else rb.mass = obj.playerFeatures.weight; 
+        
         // Add a reading component of the car features. NOTE: See the GetCarFeatures script to unify variables
         GetCarFeatures getCarFeatures = instantiatedObject.AddComponent<GetCarFeatures>();
-        getCarFeatures.unladenWeight = obj.playerFeatures.unladenWeight;
-        getCarFeatures.maxSpeedManufacturer = obj.playerFeatures.maxSpeedManufacturer;
+        getCarFeatures.weight = rb.mass;
+
+        if(obj.playerFeatures.motorForce == 0) getCarFeatures.motorForce = 1500f;
+        else getCarFeatures.motorForce = obj.playerFeatures.motorForce;
+
+        if(obj.playerFeatures.brakeForce == 0) getCarFeatures.brakeForce = 3000f;
+        else getCarFeatures.brakeForce = obj.playerFeatures.brakeForce;
+
+        if(obj.playerFeatures.maxSteerAngle == 0) getCarFeatures.maxSteerAngle = 30f;
+        else getCarFeatures.maxSteerAngle = obj.playerFeatures.maxSteerAngle;
+
+        if(obj.playerFeatures.approxMaxDrivingTime == 0) getCarFeatures.approxMaxDrivingTime = 180f;
+        else getCarFeatures.approxMaxDrivingTime = obj.playerFeatures.approxMaxDrivingTime;
+
+        if(obj.playerFeatures.maxBatteryCapacity == 0) getCarFeatures.maxBatteryCapacity = 3000.0f;
+        else getCarFeatures.maxBatteryCapacity = obj.playerFeatures.maxBatteryCapacity;
+
+        if(obj.playerFeatures.batteryVoltage == 0) getCarFeatures.batteryVoltage = 11.1f;
+        else getCarFeatures.batteryVoltage = obj.playerFeatures.batteryVoltage;
+        
+        if(obj.playerFeatures.batteryStartPercentage == 0) getCarFeatures.batteryStartPercentage = 100.0f;
+        else getCarFeatures.batteryStartPercentage = obj.playerFeatures.batteryStartPercentage;
+
+        getCarFeatures.maxSpeedAllowed = obj.playerFeatures.maxSpeedAllowed;
 
     }
 
@@ -433,9 +506,9 @@ public class ObjectSetupScript : MonoBehaviour
     }
 
     // -----------------------------------------------------------------------------------------------------
-    // Method to set the internal scripts:
+    // Method to set the internal scripts for the drone:
 
-    void SetInternalScripts(GameObject instantiatedObject, ObjectData obj)
+    void SetInternalScriptsDrone(GameObject instantiatedObject, ObjectData obj)
     {
         
         // If the player has internal scripts
@@ -455,6 +528,101 @@ public class ObjectSetupScript : MonoBehaviour
 
             }
 
+        }
+
+        // If the player has algorithm scripts
+        if(obj.algorithmScripts != null)
+        {
+
+            // For each script name in the list
+            foreach (string algorithm in obj.algorithmScripts)
+            {
+                
+                // Add the component related to the algorithm operation based on the script name
+                System.Type scriptAlgorithm = System.Type.GetType(algorithm);
+
+                // If the script is found, add it to the instantiated object
+                if (scriptAlgorithm != null) instantiatedObject.AddComponent(scriptAlgorithm);
+                else Debug.LogWarning("Player name: "+instantiatedObject.name+" | algorithmScripts: ´" + algorithm + "´ not found.");
+
+            }
+
+        }
+        
+        // If the player has other internal scripts (e.g. animations)
+        if(obj.otherInternalScripts != null)
+        {
+
+            // For each script name in the list
+            foreach (string otherInternal in obj.otherInternalScripts)
+            {
+                
+                // Add the component related to the other internal operation based on the script name
+                System.Type scriptOtherInternal = System.Type.GetType(otherInternal);
+
+                // If the script is found, add it to the instantiated object
+                if (scriptOtherInternal != null) instantiatedObject.AddComponent(scriptOtherInternal);
+                else Debug.LogWarning("Player name: "+instantiatedObject.name+" | otherInternalScripts: ´" + otherInternal + "´ not found.");
+
+            }
+
+        }
+
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // Method to set the internal scripts for the car:
+
+    void SetInternalScriptsCar(GameObject instantiatedObject, ObjectData obj)
+    {
+
+        // If the player has dynamic scripts
+        if (obj.dynamicScripts != null)
+        {
+
+            // For each script name in the list
+            foreach (string dynamic in obj.dynamicScripts)
+            {
+
+                // Add the component related to the script operation based on the script name
+                System.Type scriptDynamic = System.Type.GetType(dynamic);
+
+                // If the script is found, add it to the instantiated object
+                if (scriptDynamic != null)
+                {
+
+                    // Add the component to the instantiated object
+                    Component addedComponent = instantiatedObject.AddComponent(scriptDynamic);
+
+                    // If it's CarDynamics, we set up the wheels
+                    if (scriptDynamic == typeof(CarDynamics))
+                    {
+
+                        // Cast the added component to CarDynamics
+                        CarDynamics carDynamics = addedComponent as CarDynamics;
+
+                        // Assign WheelColliders
+                        carDynamics.frontLeftWheel = instantiatedObject.transform.Find("WheelFrontLeft")?.GetComponent<WheelCollider>();
+                        carDynamics.frontRightWheel = instantiatedObject.transform.Find("WheelFrontRight")?.GetComponent<WheelCollider>();
+                        carDynamics.backLeftWheel = instantiatedObject.transform.Find("WheelBackLeft")?.GetComponent<WheelCollider>();
+                        carDynamics.backRightWheel = instantiatedObject.transform.Find("WheelBackRight")?.GetComponent<WheelCollider>();
+
+                        // Assign visuals (first child of each Wheel)
+                        carDynamics.frontLeftWheelTransform = instantiatedObject.transform.Find("WheelFrontLeft/MonsterTruckBlueWheelFrontLeft");
+                        carDynamics.frontRightWheelTransform = instantiatedObject.transform.Find("WheelFrontRight/MonsterTruckBlueWheelFrontRight");
+                        carDynamics.backLeftWheelTransform = instantiatedObject.transform.Find("WheelBackLeft/MonsterTruckBlueWheelBackLeft");
+                        carDynamics.backRightWheelTransform = instantiatedObject.transform.Find("WheelBackRight/MonsterTruckBlueWheelBackRight");
+
+                    }
+
+                }
+                else
+                {
+                    Debug.LogWarning("Player name: " + instantiatedObject.name + " | dynamicScript: '" + dynamic + "' not found.");
+                }
+
+            }
+            
         }
 
         // If the player has algorithm scripts

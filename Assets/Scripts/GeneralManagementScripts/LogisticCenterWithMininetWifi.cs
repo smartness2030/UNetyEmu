@@ -82,6 +82,9 @@ public class LogisticCenterWithMininetWifi : MonoBehaviour
     // Variable to store the total number of drones in the scene
     public int totalNumberOfDrones;
 
+    // Variable to store the total number of cars in the scene
+    public int totalNumberOfCars = 0;
+
     // -----------------------------------------------------------------------------------------------------
     // Private variables of this class:
 

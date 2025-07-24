@@ -26,8 +26,9 @@ public class BaseStationUnity : MonoBehaviour
     // -----------------------------------------------------------------------------------------------------
     // Public variables that appear in the Inspector:
     
-    // Send stage: Dictionary to store the message handlers of the drones
+    // Send stage: Dictionary to store the message handlers of the drones and cars
     public static Dictionary<string, Action<string>> droneMessageHandlers = new Dictionary<string, Action<string>>();
+    public static Dictionary<string, Action<string>> carMessageHandlers = new Dictionary<string, Action<string>>();
 
     // Get the Logistic Center script
     public LogisticCenterWithMininetWifi logisticCenterUnityScript;
@@ -46,13 +47,19 @@ public class BaseStationUnity : MonoBehaviour
     private int maxMessagesPerFrame = 1000; // Maximum number of messages per frame
 
     // List of drones available in the scene
-    private List<string> dronesName;
+    private List<string> vehiclesName;
+
+    // List of cars available in the scene
+    private List<string> carsName;
 
     // Variable to count the number of messages per frame
     private int countMessagesPerFrame;
 
     // Variable to store the decoded drone information
     private MissionInfo.DroneInfo decodeDroneInfo;
+
+    // Variable to store the decoded car information
+    private MissionInfo.CarInfo decodeCarInfo;
 
     // -----------------------------------------------------------------------------------------------------
     // Receive stage: Awake is called when the script instance is being loaded:
@@ -87,33 +94,44 @@ public class BaseStationUnity : MonoBehaviour
     void FixedUpdate()
     {
         
-        // If the flag is true, the base station waits for all drones to be ready
+        // If the flag is true, the base station waits for all drones and cars to be ready
         if(logisticCenterUnityScript.firstMessageFlag)
         {
             
-            // Wait for all drones in the scene to send their initial messages
-            WaitForDrones();
+            // Wait for all drones and cars in the scene to send their initial messages
+            WaitForVehicles();
             
         }
-        else // If firstMessageFlag is false, the base station sends new missions messages to the drones
+        else // If firstMessageFlag is false, the base station sends new missions messages to the vehicles
         {
             
-            // If there are messages to send to the drones, send them
+            // If there are messages to send to the vehicles, send them
             if(logisticCenterUnityScript.messageLogisticCenterToBaseStation.Count > 0)
             {
                 
-                // Get the names of the drones
-                dronesName = new List<string>(logisticCenterUnityScript.messageLogisticCenterToBaseStation.Keys);
+                // Get the names of the vehicles
+                vehiclesName = new List<string>(logisticCenterUnityScript.messageLogisticCenterToBaseStation.Keys);
 
-                // Send the messages to each drone
-                foreach (string droneName in dronesName)
+                foreach (string name in vehiclesName)
                 {
-                    
-                    // Send the message to the drone
-                    UnityToUnitySendMessageToDrone(droneName, logisticCenterUnityScript.messageLogisticCenterToBaseStation[droneName]);
+
+                    if (name.ToUpper().Contains("DRO"))
+                    {
+
+                        // Send the message to the drone
+                        UnityToUnitySendMessageToDrone(name, logisticCenterUnityScript.messageLogisticCenterToBaseStation[name]);
+
+                    }
+                    else if (name.ToUpper().Contains("CAR"))
+                    {
+
+                        // Send the message to the car
+                        UnityToUnitySendMessageToCar(name, logisticCenterUnityScript.messageLogisticCenterToBaseStation[name]);
+
+                    }
                     
                     // Clear the message from the shared dictionary
-                    logisticCenterUnityScript.messageLogisticCenterToBaseStation.Remove(droneName);
+                    logisticCenterUnityScript.messageLogisticCenterToBaseStation.Remove(name);
 
                 }
 
@@ -121,19 +139,20 @@ public class BaseStationUnity : MonoBehaviour
 
         }
 
-        // Receive stage: Receive messages from the drones
+        // Receive stage: Receive messages from the drones and cars
         UnityToUnityReceiveMessageFromDrone();
+        UnityToUnityReceiveMessageFromCar();
 
     }
 
     // -----------------------------------------------------------------------------------------------------
-    // Class to wait for all drones to be ready:
+    // Class to wait for all vehicles to be ready:
 
-    void WaitForDrones()
+    void WaitForVehicles()
     {
 
-        // Wait for all drones in the scene to send their initial messages
-        if(logisticCenterUnityScript.totalNumberOfDrones == messageReceivedByDrones.Count)
+        // Wait for all vehicles in the scene to send their initial messages
+        if(logisticCenterUnityScript.totalNumberOfDrones + logisticCenterUnityScript.totalNumberOfCars == messageReceivedByDrones.Count)
         {
             
             // Reset the flag of the first message and start the whole simulation
@@ -157,6 +176,26 @@ public class BaseStationUnity : MonoBehaviour
 
             // Invoke the message handler of the drone
             droneMessageHandlers[droneName]?.Invoke(message);
+
+        }
+
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // Send stage: Class to send messages to the cars:
+
+    public static void UnityToUnitySendMessageToCar(string carName, string message)
+    {
+
+        // If the car name is in the dictionary, send the message
+        if (carMessageHandlers.ContainsKey(carName))
+        {
+
+            // Print the message sent to the car
+            Debug.Log($"UNITY-UNITY: Message sent to {carName}: {message}");
+
+            // Invoke the message handler of the car
+            carMessageHandlers[carName]?.Invoke(message);
 
         }
 
@@ -214,18 +253,74 @@ public class BaseStationUnity : MonoBehaviour
     }
 
     // -----------------------------------------------------------------------------------------------------
+    // Receive stage: Class to receive messages from the cars:
+
+    void UnityToUnityReceiveMessageFromCar()
+    {
+
+        // Block for copying messages and cleaning the list
+        lock (listLock)
+        {
+            messagesToProcess = new List<string>(messageList); // Copy the list of messages to process
+            messageList.Clear(); // Clear the list of messages
+        }
+
+        // A maximum number of messages per frame is processed
+        countMessagesPerFrame = Mathf.Min(messagesToProcess.Count, maxMessagesPerFrame);
+
+        // Process the messages received
+        for (int i = 0; i < countMessagesPerFrame; i++)
+        {
+
+            // Print the message received by the base station
+            Debug.Log($"UNITY-UNITY: {baseStationName} Received message from car: {messagesToProcess[i]}");
+
+            // Add the message to the list of messages received by the vehicles
+            messageReceivedByDrones.Add(messagesToProcess[i]);
+
+            // Decode the message received by the base station
+            decodeCarInfo = MissionInfo.DecodeCarInfo(messagesToProcess[i]);
+
+            // Send to Logistic Center the current status of the cars
+            logisticCenterUnityScript.messageBaseStationToLogisticCenter.Add(decodeCarInfo.playerName, messagesToProcess[i]);
+
+        }
+
+        // If there are unprocessed messages, we add them back to the list
+        if (messagesToProcess.Count > maxMessagesPerFrame)
+        {
+
+            // Block for adding messages back to the list
+            lock (listLock)
+            {
+                // Add the unprocessed messages back to the list
+                messageList.AddRange(messagesToProcess.GetRange(maxMessagesPerFrame, messagesToProcess.Count - maxMessagesPerFrame));
+            }
+
+        }
+        
+    }
+
+    // -----------------------------------------------------------------------------------------------------
     // Receive stage: Class to enable the message handlers of the drones:
 
     void OnEnable()
     {
         
-        // If the dictionary does not contain the base station name
+        // If the dictionary does not contain the base station name for drones
         if (!DroneCommunication.baseStationMessageHandlers.ContainsKey(baseStationName))
         {
             
             // Add the new message received from the drone to the dictionary
             DroneCommunication.baseStationMessageHandlers[baseStationName] = UnityToUnityReceiveMessageFromDroneToBaseStation;
 
+        }
+        
+        // If the dictionary does not contain the base station name for cars
+        if (!CarCommunication.baseStationMessageHandlers.ContainsKey(baseStationName))
+        {
+            // Add the new message received from the car to the dictionary
+            CarCommunication.baseStationMessageHandlers[baseStationName] = UnityToUnityReceiveMessageFromCarToBaseStation;
         }
         
     }
@@ -236,13 +331,20 @@ public class BaseStationUnity : MonoBehaviour
     void OnDisable()
     {
         
-        // If the dictionary contains the base station name
+        // If the dictionary contains the base station name for drones
         if (DroneCommunication.baseStationMessageHandlers.ContainsKey(baseStationName))
         {
             
             // Remove the corresponding message handler from the dictionary
             DroneCommunication.baseStationMessageHandlers.Remove(baseStationName);
 
+        }
+        
+        // If the dictionary contains the base station name for cars
+        if (CarCommunication.baseStationMessageHandlers.ContainsKey(baseStationName))
+        {
+            // Remove the corresponding message handler from the dictionary
+            CarCommunication.baseStationMessageHandlers.Remove(baseStationName);
         }
         
     }
@@ -262,6 +364,21 @@ public class BaseStationUnity : MonoBehaviour
 
         }
 
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+
+    // Receive stage: Class to receive messages from the cars
+    void UnityToUnityReceiveMessageFromCarToBaseStation(string message)
+    {
+
+        // Block for adding the message to the list
+        lock (listLock)
+        {
+            // Add the new message to the list
+            messageList.Add(message);
+        }
+        
     }
 
 }
