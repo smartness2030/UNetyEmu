@@ -1,8 +1,24 @@
 # UNetyEmu: Unity-based simulator for aerial and non-aerial vehicles with integrated network emulation
 
-<img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/Selos_SBRC25.png" height="120">
+<img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/Selos_SBRC25_new.png" height="120">
 
 **UNetyEmu** is a novel framework that combines real-time network emulation with high-fidelity mobility simulation, enabling realistic experimentation with both aerial and non-aerial autonomous vehicles. This integration allows researchers to evaluate vehicle coordination under dynamic communication conditions typical of smart city scenarios using 5G (and beyond) networks. Unlike existing experimental platforms, UNetyEmu provides online and offline control connectivity states, supports network emulation, and allows evaluating algorithms related to multiple drones, such as obstacle avoidance, path planning, logistics, and coordination, among others.
+
+## Publications
+
+This repository has been used in the following demo publications (you can use both to reference our work):
+
+1. **Rodriguez Cesen, M.; Góes de Castro, A.; Santana, I.; Fontes, R. R.; R. Cesen, F.; Esteve Rothenberg, C.** (2025).  
+   *UNetyEmu: Unity-based simulator for aerial and non-aerial vehicles with integrated network emulation.*  
+   In **43rd Brazilian Symposium on Computer Networks and Distributed Systems (SBRC 2025)**, Natal/RN, Brazil.  
+   DOI: [https://doi.org/10.5753/sbrc_estendido.2025.7122](https://doi.org/10.5753/sbrc_estendido.2025.7122)
+
+2. **Rodriguez, M.; Góes de Castro, A.; Fontes, R.; Rodriguez, F.; Rothenberg, C.** (2025).  
+   *An Integrated Framework for Network Emulation and Multi-vehicle Algorithm Testing.*  
+   In **Proceedings of the ACM SIGCOMM 2025 Posters and Demos (SIGCOMM ’25)**.  
+   DOI: [https://doi.org/10.1145/3744969.3748436](https://doi.org/10.1145/3744969.3748436)
+
+## Preview
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/gifVehiclesScenario.gif?raw=true" height="220">
