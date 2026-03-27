@@ -26,8 +26,8 @@ Library/PackageCache/
 Thumbs.db
 
 # Log files
-Assets/ExportedLogs/*.csv
-Assets/ExportedLogs/*.csv.meta
+UNetyEmuROS/Assets/ExportedLogs/*.csv
+UNetyEmuROS/Assets/ExportedLogs/*.csv.meta
 
 # ROS2
 ros2_ws/build
@@ -38,3 +38,5 @@ ros2_ws/log
 built_up_UNetyEmuROS/
 *.x86_64
 *_Data/
+*.tar.gz
+*.zip

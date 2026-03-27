@@ -500,6 +500,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2132856118}
     m_Modifications:
+    - target: {fileID: 228953809406852919, guid: dd38462457dc553a797401942e084ef2, type: 3}
+      propertyPath: yawKvalue.Kp
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1430613622713942844, guid: dd38462457dc553a797401942e084ef2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3
@@ -547,6 +551,34 @@ PrefabInstance:
     - target: {fileID: 4081451540193580998, guid: dd38462457dc553a797401942e084ef2, type: 3}
       propertyPath: showGizmos
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4081451540193580998, guid: dd38462457dc553a797401942e084ef2, type: 3}
+      propertyPath: maxTiltAngle
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 4081451540193580998, guid: dd38462457dc553a797401942e084ef2, type: 3}
+      propertyPath: unladenWeight
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4081451540193580998, guid: dd38462457dc553a797401942e084ef2, type: 3}
+      propertyPath: maxForcePerMotor
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4081451540193580998, guid: dd38462457dc553a797401942e084ef2, type: 3}
+      propertyPath: maxClimbSpeedAllowed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4081451540193580998, guid: dd38462457dc553a797401942e084ef2, type: 3}
+      propertyPath: maxDescentSpeedAllowed
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4081451540193580998, guid: dd38462457dc553a797401942e084ef2, type: 3}
+      propertyPath: maxPackageWeightSupported
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4081451540193580998, guid: dd38462457dc553a797401942e084ef2, type: 3}
+      propertyPath: torqueAppliedToControlYawRate
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3661,6 +3693,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 762179248}
     m_Modifications:
+    - target: {fileID: 1861869045037095605, guid: bcff4581601c3449aa6217286f86c5ef, type: 3}
+      propertyPath: motorTorque
+      value: 800
+      objectReference: {fileID: 0}
     - target: {fileID: 4065998467696786442, guid: bcff4581601c3449aa6217286f86c5ef, type: 3}
       propertyPath: m_Name
       value: car001
@@ -12843,12 +12879,32 @@ PrefabInstance:
       value: drone002Camera
       objectReference: {fileID: 0}
     - target: {fileID: 7118451148197334199, guid: 5b80cc43943b1b11084387667eb29d7b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7118451148197334199, guid: 5b80cc43943b1b11084387667eb29d7b, type: 3}
       propertyPath: controlMode
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8814989126040367463, guid: 5b80cc43943b1b11084387667eb29d7b, type: 3}
       propertyPath: showGizmos
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8814989126040367463, guid: 5b80cc43943b1b11084387667eb29d7b, type: 3}
+      propertyPath: maxTiltAngle
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 8814989126040367463, guid: 5b80cc43943b1b11084387667eb29d7b, type: 3}
+      propertyPath: unladenWeight
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 8814989126040367463, guid: 5b80cc43943b1b11084387667eb29d7b, type: 3}
+      propertyPath: maxForcePerMotor
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 8814989126040367463, guid: 5b80cc43943b1b11084387667eb29d7b, type: 3}
+      propertyPath: maxYawRateAllowed
+      value: 80
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

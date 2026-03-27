@@ -55,22 +55,10 @@ echo '\nStarting ROS bridge...';
 exec bash
 "
 
-# Wait after starting ROS bridge
-sleep $STARTUP_DELAY
-
-# Terminal 3: Monitor ROS topics
-gnome-terminal -- bash -c "
-cd $ROS_WS;
-echo '\nMonitoring ROS2 topics...';
-source install/setup.bash;
-watch -n 1 ros2 topic list;
-exec bash
-"
-
 # Wait before launching RViz
 sleep $STARTUP_DELAY
 
-# Terminal 4: Launch RViz
+# Terminal 3: Launch RViz
 gnome-terminal -- bash -c "
 cd $ROS_WS;
 echo '\nLaunching RViz...';
