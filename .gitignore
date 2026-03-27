@@ -25,6 +25,10 @@ Library/PackageCache/
 .DS_Store
 Thumbs.db
 
+# Log files
+Assets/ExportedLogs/*.csv
+Assets/ExportedLogs/*.csv.meta
+
 # ROS2
 ros2_ws/build
 ros2_ws/install
