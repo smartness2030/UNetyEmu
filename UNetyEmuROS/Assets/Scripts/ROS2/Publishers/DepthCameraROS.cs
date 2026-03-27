@@ -23,7 +23,7 @@ public class DepthCamera : MonoBehaviour
     void Start()
     {
         ros = ROSConnection.GetOrCreateInstance();
-        topicName = gameObject.name.ToLower() + "_depth_camera";
+        topicName = gameObject.name + "_depth_camera";
         ros.RegisterPublisher<ImageMsg>(topicName);
 
         depthCamera = GetComponentInChildren<Camera>();

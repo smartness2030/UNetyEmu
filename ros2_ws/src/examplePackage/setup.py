@@ -1,4 +1,12 @@
+# ------------------------------------------------------
+# Copyright 2026 INTRIG & SMARTNESS
+# Licensed under Apache 2.0: http://www.apache.org/licenses/LICENSE-2.0
+# ------------------------------------------------------
+
+
 from setuptools import find_packages, setup
+import os
+from glob import glob
 
 package_name = 'examplePackage'
 
@@ -10,11 +18,13 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        (os.path.join('share',package_name,'models'),glob('models/*.pt')),
+        (os.path.join('share',package_name,'missions'),glob(os.path.join(package_name,'missions','*.json'))),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='smartness',
-    maintainer_email='m272321@dac.unicamp.br',
+    maintainer='felipe-capovilla',
+    maintainer_email='felipe.pavanello.capovilla@gmail.com',
     description='TODO: Package description',
     license='TODO: License declaration',
     extras_require={
@@ -24,7 +34,11 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'coordinatePublisher=examplePackage.coordinatePublisher:main'
+            "missionPublisher=examplePackage.missionPublisher:main",
+            "waypointPublisher=examplePackage.waypointPublisher:main",
+            "carKeyboardControl=examplePackage.carKeyboardControl:main",
+            "droneKeyboardControl=examplePackage.droneKeyboardControl:main",
+            "yolo_detector=examplePackage.applyYolo:main"
         ],
     },
 )

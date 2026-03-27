@@ -1,0 +1,96 @@
+{
+  "steps": [
+        {
+      "movementId": 4,
+      "waitBefore": 0.0,
+      "waitAfter": 5.0,
+      "waypoints": [
+        {
+          "x": 0.0,
+          "y": 10.0,
+          "z": 0.0,
+          "cruiseSpeed": 3.0,
+          "climbSpeed": 3.0,
+          "descentSpeed": 2.0
+        }
+      ]
+    },
+    {
+      "movementId": 2,
+      "waitBefore": 0.0,
+      "waitAfter": 1.0,
+      "waypoints": [
+        {
+          "x": 0.0,
+          "y": 10.0,
+          "z": 0.0,
+          "cruiseSpeed": 3.0,
+          "climbSpeed": 3.0,
+          "descentSpeed": 2.0
+        }
+      ]
+    },
+    {
+      "movementId": 1,
+      "waitBefore": 0.0,
+      "waitAfter": 0.0,
+      "waypoints": [
+        {
+          "x": 0.0,
+          "y": 10.0,
+          "z": 0.0,
+          "cruiseSpeed": 5.0,
+          "climbSpeed": 3.0,
+          "descentSpeed": 2.0
+        },
+        {
+          "x": 20.0,
+          "y": 10.0,
+          "z": 0.0,
+          "cruiseSpeed": 5.0,
+          "climbSpeed": 3.0,
+          "descentSpeed": 2.0
+        },
+        {
+          "x": 20.0,
+          "y": 10.0,
+          "z": 20.0,
+          "cruiseSpeed": 5.0,
+          "climbSpeed": 3.0,
+          "descentSpeed": 2.0
+        }
+        
+      ]
+    },
+    {
+      "movementId": 3,
+      "waitBefore": 0.0,
+      "waitAfter": 5.0,
+      "waypoints": [
+        {
+          "x": 20.0,
+          "y": 0.0,
+          "z": 20.0,
+          "cruiseSpeed": 2.0,
+          "climbSpeed": 2.0,
+          "descentSpeed": 1.0
+        }
+      ]
+    },
+        {
+      "movementId": 5,
+      "waitBefore": 0.0,
+      "waitAfter": 5.0,
+      "waypoints": [
+        {
+          "x": 0.0,
+          "y": 10.0,
+          "z": 0.0,
+          "cruiseSpeed": 3.0,
+          "climbSpeed": 3.0,
+          "descentSpeed": 2.0
+        }
+      ]
+    }
+  ]
+}

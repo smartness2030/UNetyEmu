@@ -157,16 +157,10 @@ public class DronePositionVelocityController : MonoBehaviour
     // FixedUpdate is called at a fixed time interval, ideal for physics calculations
     void FixedUpdate()
     {
-        // Only run the position/velocity control logic if we're in Automatic mode
+        // If the control mode is not set to Automatic, switch it to Automatic to ensure the controller can take over the commands
         if (droneControlInputs.controlMode != DroneControlMode.Automatic)
         {
-            // If not in Automatic mode, disable position/velocity control and reset PID states
-            outputThrottle = 0f;
-            outputPitch = 0f;
-            outputRoll = 0f;
-            outputYaw = 0f;
-            yawPID.Reset();
-            return;
+            droneControlInputs.controlMode = DroneControlMode.Automatic;
         }
 
         // Calculate the position error in the drone's local frame (ignoring vertical error)
