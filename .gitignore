@@ -63,6 +63,11 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-# Builds
+# Unity build archives
 /Linux/
 /Windows/
+*.x86_64
+*.exe
+*_Data/
+*.tar.gz
+*.zip
