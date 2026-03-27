@@ -68,3 +68,8 @@ crashlytics-build.properties
 /SecondScenarioLinux/
 /FirstScenarioWindows/
 /SecondScenarioWindows/
+*.x86_64
+*.exe
+*_Data/
+*.tar.gz
+*.zip
