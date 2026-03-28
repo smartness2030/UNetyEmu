@@ -196,32 +196,48 @@ To edit the scene and open the full project, refer to the [Documentation](https:
 
 
 
-
-
-
-
-
-
-
-
 # Minimum Test
 
+To run the quick demo, make sure you're in the project root directory `UNetyEmu`, and enter the following. This will open several terminal windows that will be used to download the executable version of the Unity project, enable communication with ROS2, and open a saved instance of RViz2:
 
+```bash
+./runDemo.sh
+```
 
-
-
-
-### Step  — Build the ROS2 workspace
+**Build the ROS2 workspace:**
 
 ```bash
 ./buildWorkspace.sh
 ```
 
-This runs `colcon build` inside `ros2_ws/`, compiling both the `ROS-TCP-Endpoint` bridge and the `examplePackage` nodes. Expected output:
+This runs `colcon build` inside `ros2_ws/`, compiling both the `ROS-TCP-Endpoint` bridge and the `examplePackage` nodes. 
 
 
+**Terminal 1 — Download and launch the Unity executable:**
 
-The Unity executable (~1 GB) will be downloaded automatically on the first demo run.
+```bash
+python3 loadUNetyEmu.py
+```
+
+On the first run, the build is downloaded from the [GitHub Release](https://github.com/intrig-unicamp/UNetyEmu/releases/tag/sbrc26) and extracted to `built_up_UNetyEmuROS/`. Subsequent runs skip the download.
+
+
+**Terminal 2 — Run ROS-Unity bridge:**
+
+```bash
+./runROS.sh
+```
+
+This runs `source install/setup.bash` from the `ros2_ws` workspace and launches `ros_tcp_endpoint default_server_endpoint`. Wait for: `Starting ROS TCP server on 127.0.0.1:10000`
+
+
+**Terminal 3 — Launch RViz:**
+
+```bash
+rviz2 -d ../rviz/UNetyEmuROS_sensors.rviz
+```
+
+This opens a previously saved RViz window, configured to display the response from the camera and lidar sensors.
 
 
 
