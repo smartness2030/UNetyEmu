@@ -1,130 +1,17 @@
-# UNetyEmu: Unity-based simulator for aerial and non-aerial vehicles with integrated network emulation
+# UNetyEmuROS
 
-<img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/Selos_SBRC25_new.png" height="120">
+> **Paper:** "UNetyEmuROS: A Unity-Based Multi-Vehicle Simulator with Physically-Grounded Dynamics and ROS2 Sensor Integration"  
+> **Venue:** SBRC 2026 — Salão de Ferramentas
 
-**UNetyEmu** is a novel framework that combines real-time network emulation with high-fidelity mobility simulation, enabling realistic experimentation with both aerial and non-aerial autonomous vehicles. This integration allows researchers to evaluate vehicle coordination under dynamic communication conditions typical of smart city scenarios using 5G (and beyond) networks. Unlike existing experimental platforms, UNetyEmu provides online and offline control connectivity states, supports network emulation, and allows evaluating algorithms related to multiple drones, such as obstacle avoidance, path planning, logistics, and coordination, among others.
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![ROS2](https://img.shields.io/badge/ROS2-Humble-green.svg)](https://docs.ros.org/en/humble/)
+[![Unity](https://img.shields.io/badge/Unity-2022.3.62f2-black.svg)](https://unity.com/es/releases/editor/whats-new/2022.3.62f2)
+[![Platform](https://img.shields.io/badge/Platform-Linux-orange.svg)]()
 
-## Publications
-
-This repository has been used in the following demo publications (you can use both to reference our work):
-
-1. **Rodriguez Cesen, M.; Góes de Castro, A.; Santana, I.; Fontes, R. R.; R. Cesen, F.; Esteve Rothenberg, C.** (2025).  
-   *UNetyEmu: Unity-based simulator for aerial and non-aerial vehicles with integrated network emulation.*  
-   In **43rd Brazilian Symposium on Computer Networks and Distributed Systems (SBRC 2025)**, Natal/RN, Brazil.  
-   DOI: [https://doi.org/10.5753/sbrc_estendido.2025.7122](https://doi.org/10.5753/sbrc_estendido.2025.7122)
-
-2. **Rodriguez, M.; Góes de Castro, A.; Fontes, R.; Rodriguez, F.; Rothenberg, C.** (2025).  
-   *An Integrated Framework for Network Emulation and Multi-vehicle Algorithm Testing.*  
-   In **Proceedings of the ACM SIGCOMM 2025 Posters and Demos (SIGCOMM ’25)**.  
-   DOI: [https://doi.org/10.1145/3744969.3748436](https://doi.org/10.1145/3744969.3748436)
-
-## Preview
+We present UNetyEmuROS, a Unity-based multi-vehicle simulator that extends our previous work [UNetyEmu](https://github.com/intrig-unicamp/UNetyEmu/tree/sbrc25) with two key contributions: (i) a physically-grounded dynamics engine featuring per-motor forces, cascaded PID attitude control, and actuator disk energy modeling, where picking up a package physically alters thrust demand, inertia, and battery drain as emergent behavior; and (ii) a modular ROS2 sensor bridge publishing 360-LiDAR, RGB and depth camera, IMU, and GPS as standard sensor msgs topics, each independently attachable to any vehicle. We validate both contributions in an urban scenario with heterogeneous drones and ground vehicles operating concurrently on package delivery tasks, object detection, and teleoperation through ROS.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/gifVehiclesScenario.gif?raw=true" height="220">
-  <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/gifRoutePlanning.gif?raw=true" height="220">
-</p>
-<p align="center">
-  <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/gif2.gif?raw=true" height="220">
-  <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/gif3.gif?raw=true" height="220">
-</p>
-<p align="center">
-  <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/gif4.gif?raw=true" height="320">
-</p>
-<p align="center">
-  <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/gif5.gif?raw=true" height="350">
+  <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/yolo.gif?raw=true" height="220">
+  <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/lidar.gif?raw=true" height="220">
 </p>
 
-## Team
-
-Mauricio Rodriguez Cesen ([m272321@dac.unicamp.br](mailto:m272321@dac.unicamp.br)) | School of Electrical and Computer Engineering (FEEC), Universidade Estadual de Campinas (UNICAMP), São Paulo, Brazil
-
-Ariel Góes de Castro ([a272319@dac.unicamp.br](mailto:a272319@dac.unicamp.br)) | School of Electrical and Computer Engineering (FEEC), Universidade Estadual de Campinas (UNICAMP), São Paulo, Brazil
-
-Ibini A. Santana ([206466@dac.unicamp.br](mailto:206466@dac.unicamp.br)) | School of Electrical and Computer Engineering (FEEC), Universidade Estadual de Campinas (UNICAMP), São Paulo, Brazil
-
-Ramon R. Fontes ([ramon.fontes@ufrn.br](mailto:ramon.fontes@ufrn.br)) | Leading Advanced Technologies Center of Excellence (LANCE), Universidade Federal do Rio Grande do Norte (UFRN), Rio Grande do Norte, Brazil
-
-Fabricio R. Cesen ([fabricio.rodriguezcesen@telefonica.com](mailto:fabricio.rodriguezcesen@telefonica.com)) | Telefónica Research, Barcelona, Spain
-
-Christian Esteve Rothenberg ([chesteve@unicamp.br](mailto:chesteve@unicamp.br)) | School of Electrical and Computer Engineering (FEEC), Universidade Estadual de Campinas (UNICAMP), São Paulo, Brazil
-
-# Content of the Wiki documentation
-
-- [a. Repository structure](https://github.com/intrig-unicamp/UNetyEmu/wiki/a.-Repository-structure)
-- [b. Basic information](https://github.com/intrig-unicamp/UNetyEmu/wiki/b.-Basic-information)
-- [c. Dependencies](https://github.com/intrig-unicamp/UNetyEmu/wiki/c.-Dependencies)
-- [d. Full Installation](https://github.com/intrig-unicamp/UNetyEmu/wiki/d.-Installation)
-    - [Getting started with Unity](https://github.com/intrig-unicamp/UNetyEmu/wiki/d.-Installation#getting-started-with-unity)
-    - [UNetyEmu Basic Setup using Unity](https://github.com/intrig-unicamp/UNetyEmu/wiki/d.-Installation#unetyemu-basic-setup-using-unity)
-    - [Getting started with Mininet-WiFi](https://github.com/intrig-unicamp/UNetyEmu/wiki/d.-Installation#getting-started-with-mininet-wifi)
-    - [UNetyEmu Basic Setup using Mininet-WiFi](https://github.com/intrig-unicamp/UNetyEmu/wiki/d.-Installation#unetyemu-basic-setup-using-mininet-wifi)
-- [e. Minimum test](https://github.com/intrig-unicamp/UNetyEmu/wiki/e.-Minimum-test)
-    - [First Scenario Demo (only in Unity)](https://github.com/intrig-unicamp/UNetyEmu/wiki/e.-Minimum-test#first-scenario-demo-only-in-unity)
-- [f. Experiments](https://github.com/intrig-unicamp/UNetyEmu/wiki/f.-Experiments)
-    - [First Scenario Demo (Continued from section g. Minimum Tests)](https://github.com/intrig-unicamp/UNetyEmu/wiki/f.-Experiments#first-scenario-demo-continued-from-page-g-minimum-tests)
-    - [Second Scenario Demo (also only in Unity)](https://github.com/intrig-unicamp/UNetyEmu/wiki/f.-Experiments#second-scenario-demo-also-only-in-unity)
-    - [Third Scenario Demo (Unity + Mininet-WiFi)](https://github.com/intrig-unicamp/UNetyEmu/wiki/f.-Experiments#third-scenario-demo-unity--mininet-wifi)
-- [Videos and Tutorials](https://github.com/intrig-unicamp/UNetyEmu/wiki/Videos-and-Tutorials)
-
-# Repository structure
-
-The repository is structured as follows, according to the files generated by a Unity project:
-
-```
-├── Assets  
-│   ├── DepthCameraImages  
-│   ├── MissionsLogs  
-│   ├── Models  
-│   ├── Resources  
-│   ├── Scenes  
-│   ├── Scripts
-│   │   ├── Algorithms  
-│   │   ├── CameraSetting  
-│   │   ├── Controllers  
-│   │   ├── GeneralManagementScripts  
-│   │   ├── GeneralSettings  
-│   │   ├── GetFeatures  
-│   │   ├── Network
-│   │   │   └── mininet  
-│   │   ├── PlayersDynamics  
-│   │   └── Sensors  
-│   └── TextMesh Pro  
-├── ImagesDoc  
-├── Packages  
-├── ProjectSettings  
-├── Assembly-CSharp-Editor.csproj  
-├── Assembly-CSharp.csproj  
-├── LICENSE  
-└── README  
-```
-
-# Wiki Documentation
-
-For detailed information on the basic hardware and software requirements, dependencies, installation process and experiments presented in this first version of UNetyEmu, please continue to the full documentation on the [Wiki](https://github.com/intrig-unicamp/UNetyEmu/wiki).
-
-# Videos and Tutorials
-
-Below are a series of videos/tutorials to help better understand the initial configurations of UNetyEmu, along with demonstration of different simulation and emulation scenarios:
-
-#### New scenario using the integration of aerial and non-aerial vehicles (Demo submitted for SIGCOMM'25) [[link]](https://drive.google.com/file/d/1Rhcu-AYL5db2wYJLru0RDd6B5Ee99U6q/view?usp=sharing)
-
-#### New scenario under testing [[link]](https://drive.google.com/file/d/1h2DoY7kCmZLnBh2ttD5ZbnoSAHUNVSdn/view?usp=sharing)
-
-#### Scenario 3 Video [[link]](https://drive.google.com/file/d/18yqCbzED_H9MR-PKZ7Ri4imRvHL9sclz/view?usp=sharing)
-
-#### Scenario 2 Video [[link]](https://drive.google.com/file/d/1N3_DMFN2B2JJavu1VajSF_WvZa_i0CeX/view?usp=sharing)
-
-#### Scenario 1 Video [[link]](https://drive.google.com/file/d/16ZBhUAti659bQh3IR_0s_TT6xBANPX9x/view?usp=sharing)
-
-#### Opening Unity Project Video [[link]](https://drive.google.com/file/d/16iLVtsC29Wp9RyhF5cUQ0yMUbJCx-Nl0/view?usp=sharing)
-
-#### Documentation Video [[link]](https://drive.google.com/file/d/1fTIsD1m1qx0rkB-2y076hkf2bi00-U7O/view?usp=sharing)
-
-#### Unity Account Video [[link]](https://drive.google.com/file/d/1JxhwFSFr20KYXteRk9xQh-OJWBcP9Ps4/view?usp=sharing)
-
-# LICENSE
-
-Apache License
-Version 2.0, January 2004
-[http://www.apache.org/licenses/](http://www.apache.org/licenses/)
