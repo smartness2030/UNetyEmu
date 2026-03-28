@@ -154,26 +154,49 @@ The execution of this artifact is risk-free for evaluators. UNetyEmuROS uses as 
 
 
 
-
-
-
 # Installation
 
+### Step 1 — Install ROS2 Humble
+
+Follow the complete [ROS2 Installation Guide](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html) for a clean and successful installation.
 
 
-To install the required Python libraries, navigate to the `UNetyEmu/` directory and run:
+### Step 2 — Make sure you have gnome-terminal
+
+```bash
+sudo apt update
+sudo apt install gnome-terminal
+```
+
+
+### Step 3 — Clone the repository
+
+```bash
+git clone https://github.com/intrig-unicamp/UNetyEmu.git
+cd UNetyEmu
+```
+
+
+### Step 4 — Install Python libraries
+
+This will automatically install the dependencies (ultralytics, numpy, readchar): 
+
 ```bash
 pip install -r requirements.txt
 ```
 
-This will automatically install all listed dependencies.
+The installation is complete to run the quick demo using the pre-built Unity file.
+
+
+
+### Step 5 (optional) — Install Unity Hub and Unity Editor
+
+To edit the scene and open the full project, refer to the [Documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki) for step-by-step installation instructions.
 
 
 
 
 
-
-Both are compiled locally with `./buildWorkspace.sh` — no external installation required.
 
 
 
@@ -185,6 +208,20 @@ Both are compiled locally with `./buildWorkspace.sh` — no external installatio
 
 
 
+
+
+
+### Step  — Build the ROS2 workspace
+
+```bash
+./buildWorkspace.sh
+```
+
+This runs `colcon build` inside `ros2_ws/`, compiling both the `ROS-TCP-Endpoint` bridge and the `examplePackage` nodes. Expected output:
+
+
+
+The Unity executable (~1 GB) will be downloaded automatically on the first demo run.
 
 
 
