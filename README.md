@@ -242,11 +242,119 @@ This opens a previously saved RViz window, configured to display the response fr
 
 
 
-
-
 # Experiments
 
 
+### Teleoperation of car001
+
+Open a new terminal. Go to folder `ros2_ws` :
+
+```bash
+cd ros2_ws
+```
+
+Launch the work environment in that terminal:
+
+```bash
+source install/setup.bash
+```
+
+Run:
+
+```bash
+ros2 run examplePackage carKeyboardControl car001
+```
+
+The terminal will be enabled to accept keyboard input and allow you to control car001, which is currently in the scene. Click within the open Unity scene and then click the menu button in the bottom right corner. A list of all available keyboard commands will appear. Locate car001 and you will be able to remotely control it.
+
+
+
+### Sending a mission to drone001 and check the response from the Lidar sensor
+
+Open a new terminal. Go to folder `ros2_ws` :
+
+```bash
+cd ros2_ws
+```
+
+Launch the work environment in that terminal:
+
+```bash
+source install/setup.bash
+```
+
+Run:
+
+```bash
+ros2 run examplePackage missionPublisher drone001Lidar
+```
+This command will allow you to send a list of steps to follow (pick up the package, take off, cruise mode, etc.) so that drone001 can autonomously deliver a package. In addition, in RViz2 you can see the point cloud updating in real time as the drone makes the delivery.
+
+
+
+### Set target position and orientation to the drone002
+
+Open a new terminal. Go to folder `ros2_ws` :
+
+```bash
+cd ros2_ws
+```
+
+Launch the work environment in that terminal:
+
+```bash
+source install/setup.bash
+```
+
+Run:
+
+```bash
+ros2 run examplePackage waypointPublisher drone002Camera
+```
+This terminal will stay open to send new target positions to drone002. For example, an input of `5 10 5 90 5` will send a command to drone002 to fly to the position `x=5`, `y=10`, `z=5`, with an orientation of `90 degrees` and a speed of `5 m/s`.
+
+
+
+
+### Teleoperation and object detection with the drone003
+
+Open a new terminal. Go to folder `ros2_ws` :
+
+```bash
+cd ros2_ws
+```
+
+Launch the work environment in that terminal:
+
+```bash
+source install/setup.bash
+```
+
+First Run:
+
+```bash
+ros2 run examplePackage droneKeyboardControl drone003Camera
+```
+
+Then, open a new terminal. Go to folder `ros2_ws` :
+
+```bash
+cd ros2_ws
+```
+
+Launch the work environment in that terminal:
+
+```bash
+source install/setup.bash
+```
+
+And Run:
+
+```bash
+ros2 run examplePackage yolo_detector drone003Camera
+```
+
+This will open a terminal for controlling the drone003 in real time. Be sure to check the available control keys, which can be found in the Unity scene menu. Additionally, the last command enables the display of object detection in the scene, while you can continue to fly the drone and explore the area.
 
 
 
