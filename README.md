@@ -77,10 +77,35 @@ The authors of this work consider applying to the following badges: "Artefatos D
 
 # Basic Information
 
+To validate our contributions, we designed an urban delivery scenario that simultaneously tests the flight dynamics engine and the ROS2 sensor integration. The scene represents a simple urban environment with roads, buildings, and trees, in which 4 ground vehicles and 3 drones of different types operate simultaneously within the same Unity scene. The drones differ in size, mass, and equipped components, as summarized in the next Table. The first 3 ground vehicles are parked and remain stationary, using their dynamic components to interact with the scene. Meanwhile, the last ground vehicle, equipped with GPS and IMU sensors, is teleoperated from ROS2 using keyboard inputs.
 
+| Vehicle | Size  | Sensor | Control | ROS2 topic |
+|---------|-------|--------|---------|------------|
+| **Drone 1** | Medium | 360-LiDAR | `LoadMission()` | `PointCloud2` |
+| **Drone 2** | Large  | Depth Camera | `SetTarget()` | `Image (32FC1)` |
+| **Drone 3** | Small  | RGB Camera | Keyboard teleop | `Image (rgb8)` |
+| **Car 1**   | Medium | GPS + IMU | Keyboard teleop | `NavSatFix, Imu` |
 
+### Operating System
 
+- **Ubuntu 22.04 LTS (Linux x86\_64)**
+- **`gnome-terminal`** must be available, as `runFullDemo.sh` uses it to open separate terminal windows.
 
+### Hardware Requirements
+
+| Component | Minimum | Recommended |
+|-----------|---------|-------------|
+| CPU | 4 cores | 8 cores |
+| RAM | 8 GB | 16 GB |
+| GPU | Integrated | Dedicated GPU (NVIDIA or AMD) |
+| Disk | 5 GB free | 10 GB free |
+
+> A dedicated GPU is recommended for smooth rendering of the Unity scene with multiple active vehicles and sensors.
+
+### Execution Modes
+
+- **Run demo (no Unity Editor):** uses a pre-built Linux executable downloaded automatically on first run
+- **Full project (with Unity Editor):** allows opening, modifying, and recompiling the scene. Additionally requires Unity 2022.3.62f2.
 
 
 # Dependencies
