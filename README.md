@@ -19,6 +19,7 @@ We present UNetyEmuROS, a Unity-based multi-vehicle simulator that extends our p
 </p>
 
 
+
 # Repository structure
 
 ```
@@ -70,9 +71,11 @@ UNetyEmu/
 ```
 
 
+
 # Badges considered (Selos Considerados)
 
 The authors of this work consider applying to the following badges: "Artefatos Disponíveis (SeloD)", "Artefatos Funcionais (SeloF)", "Artefatos Sustentáveis (SeloS)", and "Experimentos Reprodutíveis (SeloR)".
+
 
 
 # Basic Information
@@ -102,17 +105,46 @@ To validate our contributions, we designed an urban delivery scenario that simul
 
 > A dedicated GPU is recommended for smooth rendering of the Unity scene with multiple active vehicles and sensors.
 
+
 ### Execution Modes
 
-- **Run demo (no Unity Editor):** uses a pre-built Linux executable downloaded automatically on first run
+- **Run quick demo (no Unity Editor):** uses a pre-built Linux executable downloaded automatically on first run.
 - **Full project (with Unity Editor):** allows opening, modifying, and recompiling the scene. Additionally requires Unity 2022.3.62f2.
 
 
 # Dependencies
 
+### Required (quick demo)
 
+| Dependency | Version |
+|------------|---------|
+| Ubuntu | 22.04 LTS |
+| ROS2 | Humble |
+| ROS-TCP-Connector | Included in the Unity packages |
+| ROS-TCP-Endpoint | Included in the workspace `ros2_ws/src/` |
+| RViz2 | Included with ROS2 Desktop |
+| Python | 3.10+ |
+| gnome-terminal | Any |
 
+### Required (for displaying detected objects and teleoperation via keyboard)
 
+| Dependency | Version |
+|------------|---------|
+| ultralytics (YOLOv8) | Latest |
+| readchar | Latest |
+
+### Optional (Unity Editor — to modify the project)
+
+| Dependency | Version |
+|------------|---------|
+| Unity Hub | Latest |
+| Unity Editor | 2022.3.62f2 |
+
+### Internal ROS2 packages (included in the workspace `ros2_ws/src/` )
+
+| Package | Description |
+|---------|-------------|
+| `examplePackage` | ROS2 nodes: keyboard control, mission publisher, waypoint publisher, camera receiver, YOLOv8 detection |
 
 
 
@@ -128,6 +160,20 @@ The execution of this artifact is risk-free for evaluators. UNetyEmuROS uses as 
 # Installation
 
 
+
+To install the required Python libraries, navigate to the `UNetyEmu/` directory and run:
+```bash
+pip install -r requirements.txt
+```
+
+This will automatically install all listed dependencies.
+
+
+
+
+
+
+Both are compiled locally with `./buildWorkspace.sh` — no external installation required.
 
 
 
