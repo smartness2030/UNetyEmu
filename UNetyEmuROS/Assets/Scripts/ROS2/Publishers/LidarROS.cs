@@ -1,5 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
+// ----------------------------------------------------------------------
+// Copyright 2026 INTRIG & SMARTNESS
+// Licensed under Apache 2.0: http://www.apache.org/licenses/LICENSE-2.0
+// ----------------------------------------------------------------------
+
+// Libraries
 using UnityEngine;
 using Unity.Jobs;
 using Unity.Collections;
@@ -8,30 +12,26 @@ using Unity.Robotics.ROSTCPConnector;
 using RosMessageTypes.Std;
 using RosMessageTypes.Sensor;
 
-
-
+// Class to publish Lidar information of the vehicle in a ROS topic.
 public class LidarROS : MonoBehaviour
 {   
     
-    [Header("Sensor Offset")]
     public Vector3 sensorOffset = Vector3.zero;
 
-    [Header("Sensor configuration")]
     public int horizontalResolution =360;
     public int verticalChannels = 16;
     public int verticalFOV = 45;
     public int maxDistance = 30;
     public int scansPerSecond = 10;
 
-
     private NativeArray<RaycastCommand> commands;
     private NativeArray<RaycastHit> results;
 
-    [Header("ROS Configuration")]
     private ROSConnection ros;
     private string topicName;
     private float timer;
 
+    // Start is called before the first frame update
     void Start(){
         topicName = gameObject.name + "_lidar";
         ros = ROSConnection.GetOrCreateInstance();
@@ -46,7 +46,6 @@ public class LidarROS : MonoBehaviour
             Scan();
             timer=0;
         }
-        
     }
 
     void Scan()
@@ -105,7 +104,6 @@ public class LidarROS : MonoBehaviour
             }
         };
     
-
         msg.height = 1;
         msg.width = (uint)hitCount;
         msg.is_bigendian=false;
@@ -117,7 +115,6 @@ public class LidarROS : MonoBehaviour
         string[] names = {"x","y","z"};
         for(int k=0;k<3;k++){
             msg.fields[k]=new PointFieldMsg(names[k],(uint)(k*4),PointFieldMsg.FLOAT32,1);
-
         }
 
         byte[] data = new byte[msg.row_step];
@@ -140,5 +137,3 @@ public class LidarROS : MonoBehaviour
         ros.Publish(topicName,msg);
     }
 }
-
-

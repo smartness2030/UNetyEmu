@@ -156,9 +156,15 @@ public class DroneWaypointFollower : MonoBehaviour
 
         // If there's only one waypoint, we can directly apply it to the drone without needing Pure Pursuit logic
         if (currentWaypoints.Length == 1)
+        {
+            droneSetTarget.autoOrientation = false; // Ensure auto orientation is disabled when we only have one waypoint 
             ApplyWaypointToDroneSetTarget(currentWaypoints[0]);
-        else // For multiple waypoints, we need to calculate the path distances for Pure Pursuit
+        }            
+        else
+        {
+            // For multiple waypoints, we need to calculate the path distances for Pure Pursuit
             BuildPathDistances();
+        } 
     }
 
     // ----------------------------------------------------------------------

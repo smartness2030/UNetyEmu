@@ -1,25 +1,33 @@
+// ----------------------------------------------------------------------
+// Copyright 2026 INTRIG & SMARTNESS
+// Licensed under Apache 2.0: http://www.apache.org/licenses/LICENSE-2.0
+// ----------------------------------------------------------------------
+
+// Libraries
 using UnityEngine;
 using RosMessageTypes.Sensor;
 using RosMessageTypes.Std;
 using Unity.Robotics.ROSTCPConnector;
-using System;
 
+// Class to publish depth camera data as ROS Image messages
 public class DepthCamera : MonoBehaviour
 {   
-    private ROSConnection ros;
-    private string topicName;
-    private Camera depthCamera;
-
+    
     public int width = 640;
     public int height = 480;
     public int fps = 10;
+
+    public Material depthMaterial; 
+    
+    private ROSConnection ros;
+    private string topicName;
+    private Camera depthCamera;
     private float timeElapsed;
 
     private RenderTexture depthRenderTexture;
     private Texture2D texture2D;
 
-    public Material depthMaterial; 
-
+    // Start is called before the first frame update
     void Start()
     {
         ros = ROSConnection.GetOrCreateInstance();
@@ -35,6 +43,7 @@ public class DepthCamera : MonoBehaviour
         texture2D = new Texture2D(width, height, TextureFormat.RFloat, false);
     } 
 
+    // Update is called once per frame
     void Update()
     {
         timeElapsed += Time.deltaTime;
@@ -44,6 +53,7 @@ public class DepthCamera : MonoBehaviour
         }
     }
 
+    // Apply depth shader to render texture
     void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
         if (depthMaterial != null) {
@@ -53,50 +63,36 @@ public class DepthCamera : MonoBehaviour
         }
     }
 
-void publishDepth() {
-
-    depthCamera.targetTexture = depthRenderTexture;
-    depthCamera.Render();
-
-    RenderTexture.active = depthRenderTexture;
-
-    texture2D.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-    // texture2D.Apply();
-
-    // byte[] rawData = texture2D.GetRawTextureData();
-
-    // Color[] pixels = texture2D.GetPixels();
-    // Array.Reverse(pixels);
-    // texture2D.SetPixels(pixels);
-    // texture2D.Apply();
-
-    Color[] pixels = texture2D.GetPixels();
-    Color[] flipped = new Color[pixels.Length];
-
-    for (int y = 0; y < height; y++)
+    void publishDepth()
     {
-        for (int x = 0; x < width; x++)
+
+        depthCamera.targetTexture = depthRenderTexture;
+        depthCamera.Render();
+
+        RenderTexture.active = depthRenderTexture;
+
+        texture2D.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+
+        Color[] pixels = texture2D.GetPixels();
+        Color[] flipped = new Color[pixels.Length];
+
+        for (int y = 0; y < height; y++)
         {
-            flipped[(height - 1 - y) * width + x] = pixels[y * width + x];
+            for (int x = 0; x < width; x++)
+            {
+                flipped[(height - 1 - y) * width + x] = pixels[y * width + x];
+            }
         }
-    }
 
-    texture2D.SetPixels(flipped);
-    texture2D.Apply();
+        texture2D.SetPixels(flipped);
+        texture2D.Apply();
 
+        byte[] rawData = texture2D.GetRawTextureData();
 
-
-
-
-    
-
-    byte[] rawData = texture2D.GetRawTextureData();
-
-
-    if (rawData == null || rawData.Length == 0) {
-        Debug.LogWarning("Matriz de profundidade vazia!");
-        return;
-    }
+        if (rawData == null || rawData.Length == 0) {
+            Debug.LogWarning("Empty depth image!");
+            return;
+        }
         uint sec = (uint)Time.time;
         uint nanosec = (uint)((Time.time - sec) * 1e9);
 

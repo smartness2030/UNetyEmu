@@ -3,7 +3,6 @@
 # Licensed under Apache 2.0: http://www.apache.org/licenses/LICENSE-2.0
 # ------------------------------------------------------
 
-
 # Libraries
 import rclpy
 from rclpy.node import Node
@@ -13,6 +12,7 @@ import threading
 import readchar
 import time
 
+# Node to control a drone using the keyboard. Publishes throttle, pitch, roll and yaw commands
 class DroneKeyboardControl(Node):
     def __init__(self, droneId):
         super().__init__("droneKeyboardControl")
@@ -41,7 +41,7 @@ class DroneKeyboardControl(Node):
             f"  T/G = Throttle ↑↓ | I/K = Pitch | J/L = Roll | F/H = Yaw | Q = Exit"
         )
 
-    # Receive keyboard commands.
+    # Receive keyboard commands
     def key_loop(self):
         KEY_MAP = {
             "t": "throttle_up",   "g": "throttle_down",
@@ -65,7 +65,7 @@ class DroneKeyboardControl(Node):
                     target=self._auto_release, args=(action,), daemon=True
                 ).start()
     
-    #Remove the pressed key to improve control UI.
+    #Remove the pressed key to improve control UI
     def _auto_release(self, action):
         time.sleep(0.4)
         self.keys_held.discard(action)
@@ -126,9 +126,11 @@ class DroneKeyboardControl(Node):
         msg.data = [self.throttle, self.pitch, self.roll, self.yaw]
         self.publisher.publish(msg)
 
-
 def main():
+    
+    # Allow drone ID to be passed as an argument, with default "drone003Camera"
     drone_id = sys.argv[1] if len(sys.argv) > 1 else "drone003Camera"
+    
     rclpy.init()
     node = DroneKeyboardControl(drone_id)
     rclpy.spin(node)

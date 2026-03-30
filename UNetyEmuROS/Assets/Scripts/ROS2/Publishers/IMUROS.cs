@@ -1,50 +1,44 @@
-using System.Collections;
-using System.Collections.Generic;
+// ----------------------------------------------------------------------
+// Copyright 2026 INTRIG & SMARTNESS
+// Licensed under Apache 2.0: http://www.apache.org/licenses/LICENSE-2.0
+// ----------------------------------------------------------------------
+
+// Libraries
 using UnityEngine;
 using RosMessageTypes.Geometry;
-using Unity.Robotics.ROSTCPConnector.MessageGeneration;
 using RosMessageTypes.Sensor;
 using Unity.Robotics.ROSTCPConnector;
-using Unity.VisualScripting;
 using RosMessageTypes.Std;
-using System.Numerics;
 
+// Class to publish IMU information of the vehicle in a ROS topic.
 public class IMUROS : MonoBehaviour
 {
-    // Start is called before the first frame update
     private ROSConnection ros;
     private Rigidbody rb;
 
-    private UnityEngine.Vector3 prevVelocity, prevAngularVelocity;
+    private Vector3 prevVelocity;
     private string topicName;
-    private string droneID;
-
+    private string vehicleID;
     
+    // Start is called before the first frame update
     void Start()
     {
-        droneID = gameObject.name;
-        topicName = droneID + "_IMU";
+        vehicleID = gameObject.name;
+        topicName = vehicleID + "_IMU";
 
         ros = ROSConnection.GetOrCreateInstance();
         ros.RegisterPublisher<ImuMsg>(topicName);
 
         rb = GetComponent<Rigidbody>();
-
-
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    // FixedUpdate is called at a fixed time interval, ideal for physics calculations
     void FixedUpdate()
     {
-        UnityEngine.Vector3 velocity = rb.velocity;
-        UnityEngine.Vector3 angularVelocity = rb.angularVelocity;
+        Vector3 velocity = rb.velocity;
+        Vector3 angularVelocity = rb.angularVelocity;
 
-        UnityEngine.Vector3 acceleration = (velocity - prevVelocity) / Time.fixedDeltaTime;
+        Vector3 acceleration = (velocity - prevVelocity) / Time.fixedDeltaTime;
         prevVelocity = velocity;
 
         ImuMsg outputMsg = new ImuMsg();
@@ -54,7 +48,6 @@ public class IMUROS : MonoBehaviour
             {
                 sec = (int)Time.time,
                 nanosec = (uint)((Time.time - Mathf.Floor(Time.time)) * 1e-9)
-
             }
         };
 
@@ -76,10 +69,6 @@ public class IMUROS : MonoBehaviour
             acceleration.y,
             acceleration.z
         );
-
-      //  outputMsg.orientation_covariance = new double[9];
-       // outputMsg.angular_velocity_covariance = new double[9];
-        //outputMsg.linear_acceleration_covariance = new double[9];
 
         ros.Publish(topicName, outputMsg);
     }

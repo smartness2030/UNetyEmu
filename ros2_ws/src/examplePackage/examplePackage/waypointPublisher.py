@@ -10,6 +10,7 @@ import threading
 from std_msgs.msg import Float32MultiArray
 import sys
 
+# Node to publish waypoints to a drone via ROS2 topic
 class WaypointPublisher(Node):
     def __init__(self,droneId):
         super().__init__("waypointPublisher")
@@ -21,7 +22,7 @@ class WaypointPublisher(Node):
         self.thread = threading.Thread(target=self.inputTerminal,daemon=True)
         self.thread.start()
 
-    # Another thread to read the terminal while running ROS2 communication.    
+    # Another thread to read the terminal while running ROS2 communication    
     def inputTerminal(self):
         while(rclpy.ok()):
             try:
@@ -40,7 +41,6 @@ class WaypointPublisher(Node):
             except EOFError:
                 break
 
-
 def main():
     drone_id = sys.argv[1] if len(sys.argv) > 1 else "001"
     rclpy.init()
@@ -49,8 +49,5 @@ def main():
     node.destroy_node()
     rclpy.shutdown()
 
-
-
 if __name__ == "__main__":
     main()
-

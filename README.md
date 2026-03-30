@@ -255,11 +255,15 @@ This commands will allow you to send a list of steps to follow (pick up the pack
 
 In addition, in RViz2 you can see the point cloud updating in real-time as the drone makes the delivery.
 
-> NOTE: Follow our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki) for a better understanding of how to view or enable sensors in RViz2.
+> IMPORTANT NOTE: This command will behave as expected if it is executed **ONLY ONCE** at any point during the simulation. For a better understanding of how the drone executes this mission, please refer to our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki).
 
 
 
 ### 2. Depth camera and position control: Set target position and orientation to the drone002
+
+To view `drone002`, click within the open Unity scene and then click the menu button in the bottom right corner. A list of all available keyboard commands will appear. 
+
+Switch the view in Unity until `dron002` appears. For that, press the `C` key once.
 
 Open a new terminal. Go to the root folder of our project `UNetyEmu`, and run the following:
 
@@ -271,12 +275,14 @@ ros2 run examplePackage waypointPublisher drone002Camera
 
 This terminal will stay open to send new target positions to `drone002`. For example, an input of `5 10 5 90 3` will send a command to `drone002` to fly to the position longitude `x=5`, altitude `y=10`, latitude `z=5`, with an orientation of `90 degrees` and a speed of `3 m/s`.
 
-> IMPORTANT NOTE: This command will behave as expected if it is executed **ONLY ONCE** at any point during the simulation. For a better understanding of how the drone executes this mission, please refer to our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki).
+> NOTE: Follow our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki) for a better understanding of how to view the depth camera output of `drone002` on `RViz2`.
 
 
 
 
 ### 3. RGB camera, object detection, and teleoperated: Remote Control and object detection with the drone003
+
+Switch the view in Unity until `dron003` appears (pressing the `C` or `V` key).
 
 For this last experiment, you will need to open two terminals. 
 
@@ -306,6 +312,8 @@ This will allow you to run and observe object detection in real-time using a YOL
 
 ### 4. Ground vehicles: Teleoperation of car001
 
+Switch the view in Unity until `car001` appears (pressing the `C` or `V` key).
+
 Open a new terminal. Go to the root folder of our project `UNetyEmu`, and run the following:
 
 ```bash
@@ -314,14 +322,9 @@ source install/setup.bash
 ros2 run examplePackage carKeyboardControl car001
 ```
 
-The terminal will be enabled to accept keyboard input and allow you to control `car001`, which is currently in the scene. 
+The terminal will be enabled to accept keyboard input and allow you to remotely control `car001`, which is currently in the scene. 
 
-Click within the open Unity scene and then click the menu button in the bottom right corner. A list of all available keyboard commands will appear. Switch the view in Unity until `car001` appears. For that, press the C key three time and the view should move from `drone001` to `drone002` to `drone003` and then to `car001`.
-
-From the terminal open with ROS, you will be able to remotely control it.
-
-> NOTE: Follow our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki) for a better understanding of how to use the keys.
-
+> NOTE: Follow our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki) for a better understanding of how to use the keys to properly control the car.
 
 
 

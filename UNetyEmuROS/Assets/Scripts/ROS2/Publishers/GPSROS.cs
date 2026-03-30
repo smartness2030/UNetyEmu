@@ -1,42 +1,37 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+// ----------------------------------------------------------------------
+// Copyright 2026 INTRIG & SMARTNESS
+// Licensed under Apache 2.0: http://www.apache.org/licenses/LICENSE-2.0
+// ----------------------------------------------------------------------
+
+// Libraries
 using Unity.Robotics.ROSTCPConnector;
 using UnityEngine;
 using RosMessageTypes.Sensor;
 using RosMessageTypes.Std;
 
-
-
-
+// Class to publish GPS information of the vehicle in a ROS topic.
 public class GPSROS : MonoBehaviour
 {
 
     private ROSConnection ros;
     private Rigidbody rb;
 
-    private UnityEngine.Vector3 globalPosition, localPosition;
     private string topicName;
-    private string droneID;
+    private string vehicleID;
+
     // Start is called before the first frame update
     void Start()
     {
-        droneID=gameObject.name;
-        topicName = droneID+"_GPS";
+        vehicleID=gameObject.name;
+        topicName = vehicleID+"_GPS";
 
         ros = ROSConnection.GetOrCreateInstance();
         ros.RegisterPublisher<NavSatFixMsg>(topicName);
 
         rb = GetComponent<Rigidbody>();
-        
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // FixedUpdate is called at a fixed time interval, ideal for physics calculations
     void FixedUpdate()
     {
         UnityEngine.Vector3 global_pos = transform.position;
@@ -53,7 +48,6 @@ public class GPSROS : MonoBehaviour
             {
                 sec = (int)Time.time,
                 nanosec = (uint)((Time.time - Mathf.Floor(Time.time)) * 1e-9)
-
             }
         };
 

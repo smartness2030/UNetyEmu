@@ -3,8 +3,6 @@
 # Licensed under Apache 2.0: http://www.apache.org/licenses/LICENSE-2.0
 # ------------------------------------------------------
 
-
-
 # Libraries
 import rclpy
 from rclpy.node import Node
@@ -14,6 +12,7 @@ import os
 import sys
 from ament_index_python.packages import get_package_share_directory
 
+# Node to publish a JSON mission file to a drone via ROS2 topic
 class MissionPublisher(Node):
     def __init__(self, drone_id):
         super().__init__('mission_publisher')
@@ -22,7 +21,7 @@ class MissionPublisher(Node):
         self.topic = f"{self.drone_id}_Missionreceiver"
         self.pub = self.create_publisher(String, self.topic, 10)
 
-    # Function to send de JSON vile via ROS2.
+    # Function to send de JSON vile via ROS2
     def send_mission(self, mission: dict):
         msg = String()
         msg.data = json.dumps(mission)
@@ -36,7 +35,7 @@ def main():
     drone_id = sys.argv[1] if len(sys.argv) > 1 else "drone001"
 
     package_share_dir = get_package_share_directory('examplePackage')
-    mission_path = os.path.join(package_share_dir,'missions','mission.json') # Mission file.
+    mission_path = os.path.join(package_share_dir,'missions','mission.json') # Mission file
     with open(mission_path, "r") as f:
         mission = json.load(f)
 

@@ -1,23 +1,31 @@
+// ----------------------------------------------------------------------
+// Copyright 2026 INTRIG & SMARTNESS
+// Licensed under Apache 2.0: http://www.apache.org/licenses/LICENSE-2.0
+// ----------------------------------------------------------------------
+
+// Libraries
 using UnityEngine;
 using RosMessageTypes.Sensor;
 using RosMessageTypes.Std;
 using Unity.Robotics.ROSTCPConnector;
-using System;
 
+// Class to publish RGB camera information of the vehicle in a ROS topic.
 public class RGBCameraROS : MonoBehaviour
 {   
+    public int width = 640;
+    public int height = 480;
+    public int fps = 10;
+
     private ROSConnection ros;
     private string topicName;
     private Camera rgbCamera;
 
-    public int width = 640;
-    public int height = 480;
-    public int fps = 10;
     private float timeElapsed;
 
     private RenderTexture rgbRenderTexture;
     private Texture2D texture2D;
 
+    // Start is called before the first frame update
     void Start()
     {
         ros = ROSConnection.GetOrCreateInstance();
@@ -26,13 +34,13 @@ public class RGBCameraROS : MonoBehaviour
 
         rgbCamera = GetComponentInChildren<Camera>();
 
-        // RenderTexture independiente por dron (IMPORTANTE)
         rgbRenderTexture = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32);
         rgbCamera.targetTexture = rgbRenderTexture;
 
         texture2D = new Texture2D(width, height, TextureFormat.RGB24, false);
     } 
 
+    // Update is called once per frame
     void Update()
     {
         timeElapsed += Time.deltaTime;
@@ -52,7 +60,6 @@ public class RGBCameraROS : MonoBehaviour
 
         texture2D.ReadPixels(new Rect(0, 0, width, height), 0, 0);
 
-        // ---- FLIP VERTICAL (igual que depth) ----
         Color[] pixels = texture2D.GetPixels();
         Color[] flipped = new Color[pixels.Length];
 
@@ -70,7 +77,7 @@ public class RGBCameraROS : MonoBehaviour
         byte[] rawData = texture2D.GetRawTextureData();
 
         if (rawData == null || rawData.Length == 0) {
-            Debug.LogWarning("Imagen RGB vacía!");
+            Debug.LogWarning("RGB image is empty!");
             return;
         }
 

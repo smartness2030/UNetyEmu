@@ -3,8 +3,6 @@
 // Licensed under Apache 2.0: http://www.apache.org/licenses/LICENSE-2.0
 // ----------------------------------------------------------------------
 
-
-
 // Libraries
 using System;
 using System.Collections.Generic;
@@ -12,24 +10,23 @@ using UnityEngine;
 using Unity.Robotics.ROSTCPConnector;
 using RosMessageTypes.Std;
 
+// Class to receive a drone mission from ROS and load it in the planner
 [RequireComponent(typeof(DroneMissionPlanner))]
 public class MissionReceiver : MonoBehaviour
 {
-
     private string droneID;
     private DroneMissionPlanner planner;
 
-    [Serializable]
-    private class WaypointData
+    [Serializable] private class WaypointData
     {
         public float x, y, z;
+        public float orientation;
         public float cruiseSpeed;
         public float climbSpeed;
         public float descentSpeed;
     }
 
-    [Serializable]
-    private class StepData
+    [Serializable] private class StepData
     {
         public int movementId;
         public float waitBefore;
@@ -37,12 +34,12 @@ public class MissionReceiver : MonoBehaviour
         public List<WaypointData> waypoints;
     }
 
-    [Serializable]
-    private class MissionData
+    [Serializable] private class MissionData
     {
         public List<StepData> steps;
     }
 
+    // Start is called before the first frame update
     void Start()
     {
         droneID = gameObject.name;
@@ -51,7 +48,6 @@ public class MissionReceiver : MonoBehaviour
         string topic = droneID + "_Missionreceiver";
         
         ROSConnection.GetOrCreateInstance().Subscribe<StringMsg>(topic, missionUpdate);
-
     }
 
     void missionUpdate(StringMsg receivedMsg)
@@ -87,7 +83,7 @@ public class MissionReceiver : MonoBehaviour
         return steps;
     }
 
-    SetDroneTarget[] BuildWaypoints(List<WaypointData> wps) //Build the drone route.
+    SetDroneTarget[] BuildWaypoints(List<WaypointData> wps) //Build the drone route
     {
         SetDroneTarget[] targets = new SetDroneTarget[wps.Count];
 
@@ -97,7 +93,7 @@ public class MissionReceiver : MonoBehaviour
             targets[k] = new SetDroneTarget
             {
                 position     = new Vector3(w.x, w.y, w.z),
-                orientation  = 0, 
+                orientation  = w.orientation,
                 cruiseSpeed  = w.cruiseSpeed,
                 climbSpeed   = w.climbSpeed,
                 descentSpeed = w.descentSpeed
@@ -109,7 +105,7 @@ public class MissionReceiver : MonoBehaviour
 
     MissionStepType IdToStepType(int id)
     {
-        switch (id) // All mission stlyes possibilities.
+        switch (id) // All mission stlyes possibilities
         {
             case 1:  return MissionStepType.Cruise;
             case 2:  return MissionStepType.Takeoff;

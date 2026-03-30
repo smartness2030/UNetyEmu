@@ -13,8 +13,10 @@ import os
 import sys
 from datetime import datetime
 
+# Node to subscribe to drone camera feed and save the images to disk for dataset collection
 class ImageSaver(Node):
-    #Node startup.
+    
+    #Node startup
     def __init__(self, drone_id, output_dir):
         super().__init__("image_saver")
         
@@ -31,9 +33,9 @@ class ImageSaver(Node):
             10
         )
         
-        self.get_logger().info(f"Salvando imagens de '{topic_name}' em '{self.output_dir}'")
+        self.get_logger().info(f"Saving images from '{topic_name}' to '{self.output_dir}'")
     
-    # Function to receive drone camera image.
+    # Function to receive drone camera image
     def image_callback(self, msg):
         try:
             img_array = np.frombuffer(msg.data, dtype=np.uint8)
@@ -50,11 +52,10 @@ class ImageSaver(Node):
             self.frame_count += 1
             
             if self.frame_count % 50 == 0:
-                self.get_logger().info(f"{self.frame_count} imagens salvas...")
+                self.get_logger().info(f"{self.frame_count} images saved...")
 
         except Exception as e:
-            self.get_logger().error(f"Erro ao salvar imagem: {e}")
-
+            self.get_logger().error(f"Error saving image: {e}")
 
 def main():
     drone_id    = sys.argv[1] if len(sys.argv) > 1 else "drone001"

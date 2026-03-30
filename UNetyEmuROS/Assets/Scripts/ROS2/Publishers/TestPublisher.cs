@@ -3,25 +3,23 @@
 // Licensed under Apache 2.0: http://www.apache.org/licenses/LICENSE-2.0
 // ----------------------------------------------------------------------
 
-
 // Libraries
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Unity.Robotics.ROSTCPConnector;
 using RosMessageTypes.Std;
-using Unity.VisualScripting.FullSerializer;
-using RosMessageTypes.Rosgraph;
 
+// Class to test ROS connection and topic publishing
 public class TestPublisher : MonoBehaviour
 {
-    ROSConnection ros; //Ros connection object.
     public string topicName = "/hello_world";
-    float timer;
 
+    private ROSConnection ros;
+    private float timer;
+
+    // Start is called before the first frame update
     void Start()
     {
-        //Instanciate and start ROS connection.
+        //Instanciate and start ROS connection
         ros = ROSConnection.GetOrCreateInstance();
         ros.RegisterPublisher<StringMsg>(topicName);
     }
@@ -34,9 +32,7 @@ public class TestPublisher : MonoBehaviour
         {
             timer = 0.0f;
             StringMsg msg = new StringMsg("Hello from Unity!");
-            ros.Publish(topicName, msg); //Publish msg in ros topic.
-
+            ros.Publish(topicName, msg); //Publish msg in ros topic
         }
-        
     }
 }

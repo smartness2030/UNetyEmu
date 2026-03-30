@@ -3,6 +3,7 @@
 # Licensed under Apache 2.0: http://www.apache.org/licenses/LICENSE-2.0
 # ------------------------------------------------------
 
+# Libraries
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
@@ -15,6 +16,7 @@ import os
 import threading
 import torch
 
+# Node to apply YOLOv8 detection on drone camera feed and display the results in a window
 class YoloDetectorNode(Node):
 
     def __init__(self, drone_id):
@@ -38,8 +40,8 @@ class YoloDetectorNode(Node):
             10
         )
 
-        self.latest_frame = None          # Frame mais recente para exibir
-        self.frame_lock = threading.Lock()  # Proteção de acesso concorrente
+        self.latest_frame = None            # Latest frame to display
+        self.frame_lock = threading.Lock()  # Concurrent access protection
         self.frame_count = 0
         self.window_name = f"YOLO - {drone_id}"
 
@@ -53,7 +55,7 @@ class YoloDetectorNode(Node):
             results = self.model(img_bgr, verbose=False)[0]
             annotated = self._draw_detections(img_bgr.copy(), results)
 
-            # Salva o frame — NÃO exibe aqui
+            # Save the frame and do not display it here
             with self.frame_lock:
                 self.latest_frame = annotated
 
@@ -90,16 +92,18 @@ class YoloDetectorNode(Node):
 
 
 def main():
+    
+    # Allow drone ID to be passed as an argument, defaulting to "drone003camera"
     drone_id = sys.argv[1] if len(sys.argv) > 1 else "drone003camera"
 
     rclpy.init()
     node = YoloDetectorNode(drone_id)
 
-    # ROS spin em thread separada — libera a thread principal para a GUI
+    # ROS spin on a separate thread — frees the main thread for the GUI
     spin_thread = threading.Thread(target=rclpy.spin, args=(node,), daemon=True)
     spin_thread.start()
 
-    # Janela criada na thread principal (obrigatório pro Qt)
+    # Window created in the main thread (required for Qt)
     cv2.namedWindow(node.window_name, cv2.WINDOW_NORMAL)
     cv2.resizeWindow(node.window_name, 960, 540)
 
@@ -111,7 +115,7 @@ def main():
             if frame is not None:
                 cv2.imshow(node.window_name, frame)
 
-            # waitKey DEVE ficar no loop principal
+            # waitKey MUST be in the main loop
             key = cv2.waitKey(1) & 0xFF
             if key == ord("q"):
                 node.get_logger().info("Closing...")
@@ -123,7 +127,6 @@ def main():
         cv2.destroyAllWindows()
         node.destroy_node()
         rclpy.shutdown()
-
 
 if __name__ == "__main__":
     main()
