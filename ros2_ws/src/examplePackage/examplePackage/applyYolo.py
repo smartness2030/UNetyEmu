@@ -13,7 +13,7 @@ from ultralytics import YOLO
 from ament_index_python.packages import get_package_share_directory
 import os
 import threading
-
+import torch
 
 class YoloDetectorNode(Node):
 
@@ -24,6 +24,7 @@ class YoloDetectorNode(Node):
 
         self.get_logger().info(f"Loading YOLOv8 model: {model_path}")
         self.model = YOLO(model_path)
+        self.model.to(torch.device('cpu'))
         self.get_logger().info("Model loaded!")
 
         np.random.seed(42)

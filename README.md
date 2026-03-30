@@ -1,6 +1,6 @@
 # UNetyEmuROS
 
-> **Paper:** "UNetyEmuROS: A Unity-Based Multi-Vehicle Simulator with Physically-Grounded Dynamics and ROS2 Sensor Integration"  
+> **Paper submitted:** "UNetyEmuROS: A Unity-Based Multi-Vehicle Simulator with Physically-Grounded Dynamics and ROS2 Sensor Integration"  
 > **Venue:** SBRC 2026 — Salão de Ferramentas
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
@@ -23,7 +23,7 @@ We present UNetyEmuROS, a Unity-based multi-vehicle simulator that extends our p
 # Repository structure
 
 ```
-UNetyEmu/
+UNetyEmu-main/
 ├── UNetyEmuROS/                                  # Unity project
 │   └── Assets/Scripts/
 │       ├── CameraView/                           # Follow camera and HUD
@@ -64,7 +64,7 @@ UNetyEmu/
 │   └── connect.sh                                # Sources setup.bash and runs ros_tcp_endpoint
 ├── rviz/
 │   └── UNetyEmuROS_sensors.rviz                  # RViz2 sensor visualization config
-├── runFullDemo.sh                                # Launches the complete demo
+├── launchDemo.sh                                # Launches the complete demo
 ├── runROS.sh                                     # Starts the ROS2–Unity TCP bridge
 ├── buildWorkspace.sh                             # Builds the ROS2 workspace with colcon
 └── loadUNetyEmu.py                               # Downloads and launches the Unity build
@@ -92,7 +92,7 @@ To validate our contributions, we designed an urban delivery scenario that simul
 ### Operating System
 
 - **Ubuntu 22.04 LTS (Linux x86\_64)**
-- **`gnome-terminal`** must be available, as `runFullDemo.sh` uses it to open separate terminal windows.
+- **`gnome-terminal`** must be available, as `launchDemo.sh` uses it to open separate terminal windows.
 
 ### Hardware Requirements
 
@@ -103,7 +103,7 @@ To validate our contributions, we designed an urban delivery scenario that simul
 | GPU | Integrated | Dedicated GPU (NVIDIA or AMD) |
 | Disk | 5 GB free | 10 GB free |
 
-> A dedicated GPU is recommended for smooth rendering of the Unity scene with multiple active vehicles and sensors.
+> Note: A dedicated GPU is recommended for smooth rendering of the Unity scene with multiple active vehicles and sensors.
 
 
 ### Execution Modes
@@ -125,6 +125,7 @@ To validate our contributions, we designed an urban delivery scenario that simul
 | RViz2 | Included with ROS2 Desktop |
 | Python | 3.10+ |
 | gnome-terminal | Any |
+| pip | 22.0.0+ |
 
 ### Required (for displaying detected objects and teleoperation via keyboard)
 
@@ -158,32 +159,42 @@ The execution of this artifact is risk-free for evaluators. UNetyEmuROS uses as 
 
 ### Step 1 — Install ROS2 Humble
 
-Follow the complete [ROS2 Installation Guide](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html) for a clean and successful installation.
+Follow the [ROS2 Installation Guide](https://github.com/intrig-unicamp/UNetyEmu/wiki) with step-by-step instructions.
 
 
-### Step 2 — Make sure you have gnome-terminal
+### Step 2 — Make sure you have gnome-terminal and pip installed
 
 ```bash
 sudo apt update
-sudo apt install gnome-terminal
+sudo apt install gnome-terminal python3-pip
 ```
 
 
-### Step 3 — Clone the repository
+### Step 3 — Clone this repository
 
 ```bash
 git clone https://github.com/intrig-unicamp/UNetyEmu.git
 cd UNetyEmu
 ```
 
+or  download the [zipped project](https://github.com/intrig-unicamp/UNetyEmu/archive/refs/heads/main.zip) and navigate to the project's root folder `UNetyEmu-main/`.
+
 
 ### Step 4 — Install Python libraries
 
-This will automatically install the dependencies (ultralytics, numpy, readchar): 
+This will install the dependencies: `ultralytics`, `numpy`, and `readchar` 
 
 ```bash
 pip install -r requirements.txt
 ```
+
+> Note: If, during installation, you see warnings that Ubuntu couldn't find the PATH to the folder where pip placed the executables, add that folder to the PATH:
+
+```bash
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
 
 The installation is complete to run the quick demo using the pre-built Unity file.
 
@@ -191,170 +202,125 @@ The installation is complete to run the quick demo using the pre-built Unity fil
 
 ### Step 5 (optional) — Install Unity Hub and Unity Editor
 
-To edit the scene and open the full project, refer to the [Documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki) for step-by-step installation instructions.
+To edit the scene and open the Unity project, follow the [Unity Installation Guide](https://github.com/intrig-unicamp/UNetyEmu/wiki) with step-by-step instructions.
 
 
 
 
 # Minimum Test
 
-To run the quick demo, make sure you're in the project root directory `UNetyEmu`, and enter the following. This will open several terminal windows that will be used to download the executable version of the Unity project, enable communication with ROS2, and open a saved instance of RViz2:
+To run the quick demo, make sure you're in the project root directory `UNetyEmu`, and execute the following: 
 
 ```bash
-./runDemo.sh
+./launchDemo.sh
 ```
 
-**Build the ROS2 workspace:**
+This bash script will build the ROS 2 workspace and open 3 terminals:
 
-```bash
-./buildWorkspace.sh
-```
+- **Terminal 1** — Download and launch the Unity executable
+- **Terminal 2** — Run ROS-Unity bridge
+- **Terminal 3** — Launch RViz
 
-This runs `colcon build` inside `ros2_ws/`, compiling both the `ROS-TCP-Endpoint` bridge and the `examplePackage` nodes. 
+In summary, the connection between ROS and Unity has been established, and you will see both the Unity scene window and the rviz window, where you can view the sensor output.
 
-
-**Terminal 1 — Download and launch the Unity executable:**
-
-```bash
-python3 loadUNetyEmu.py
-```
-
-On the first run, the build is downloaded from the [GitHub Release](https://github.com/intrig-unicamp/UNetyEmu/releases/tag/sbrc26) and extracted to `built_up_UNetyEmuROS/`. Subsequent runs skip the download.
-
-
-**Terminal 2 — Run ROS-Unity bridge:**
-
-```bash
-./runROS.sh
-```
-
-This runs `source install/setup.bash` from the `ros2_ws` workspace and launches `ros_tcp_endpoint default_server_endpoint`. Wait for: `Starting ROS TCP server on 127.0.0.1:10000`
-
-
-**Terminal 3 — Launch RViz:**
-
-```bash
-rviz2 -d ../rviz/UNetyEmuROS_sensors.rviz
-```
-
-This opens a previously saved RViz window, configured to display the response from the camera and lidar sensors.
-
+<p align="center">
+  <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/demoLaunched.png" height="500" alt="demoLaunched.png">
+</p>
 
 
 
 # Experiments
 
+In this demonstration, you can perform 4 different experiments in which various drones and cars interact within the same scene. 
 
-### Teleoperation of car001
+First, add ROS2 to your `.bashrc` so that RViz2 work in any terminal:
 
-Open a new terminal. Go to folder `ros2_ws` :
+```bash
+echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+```
+
+
+### 1. Autonomous delivery with 360-LiDAR: Sending a mission to drone001 and check the response from the Lidar sensor
+
+Open a new terminal. Go to the root folder of our project `UNetyEmu`, and run the following:
 
 ```bash
 cd ros2_ws
-```
-
-Launch the work environment in that terminal:
-
-```bash
 source install/setup.bash
-```
-
-Run:
-
-```bash
-ros2 run examplePackage carKeyboardControl car001
-```
-
-The terminal will be enabled to accept keyboard input and allow you to control car001, which is currently in the scene. Click within the open Unity scene and then click the menu button in the bottom right corner. A list of all available keyboard commands will appear. Locate car001 and you will be able to remotely control it.
-
-
-
-### Sending a mission to drone001 and check the response from the Lidar sensor
-
-Open a new terminal. Go to folder `ros2_ws` :
-
-```bash
-cd ros2_ws
-```
-
-Launch the work environment in that terminal:
-
-```bash
-source install/setup.bash
-```
-
-Run:
-
-```bash
 ros2 run examplePackage missionPublisher drone001Lidar
 ```
-This command will allow you to send a list of steps to follow (pick up the package, take off, cruise mode, etc.) so that drone001 can autonomously deliver a package. In addition, in RViz2 you can see the point cloud updating in real time as the drone makes the delivery.
+
+This commands will allow you to send a list of steps to follow (pick up the package, take off, cruise mode, etc.) so that `drone001` can autonomously deliver a package. 
+
+In addition, in RViz2 you can see the point cloud updating in real-time as the drone makes the delivery.
+
+> NOTE: Follow our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki) for a better understanding of how to view or enable sensors in RViz2.
 
 
 
-### Set target position and orientation to the drone002
+### 2. Depth camera and position control: Set target position and orientation to the drone002
 
-Open a new terminal. Go to folder `ros2_ws` :
+Open a new terminal. Go to the root folder of our project `UNetyEmu`, and run the following:
 
 ```bash
 cd ros2_ws
-```
-
-Launch the work environment in that terminal:
-
-```bash
 source install/setup.bash
-```
-
-Run:
-
-```bash
 ros2 run examplePackage waypointPublisher drone002Camera
 ```
-This terminal will stay open to send new target positions to drone002. For example, an input of `5 10 5 90 5` will send a command to drone002 to fly to the position `x=5`, `y=10`, `z=5`, with an orientation of `90 degrees` and a speed of `5 m/s`.
+
+This terminal will stay open to send new target positions to `drone002`. For example, an input of `5 10 5 90 3` will send a command to `drone002` to fly to the position longitude `x=5`, altitude `y=10`, latitude `z=5`, with an orientation of `90 degrees` and a speed of `3 m/s`.
+
+> IMPORTANT NOTE: This command will behave as expected if it is executed **ONLY ONCE** at any point during the simulation. For a better understanding of how the drone executes this mission, please refer to our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki).
 
 
 
 
-### Teleoperation and object detection with the drone003
+### 3. RGB camera, object detection, and teleoperated: Remote Control and object detection with the drone003
 
-Open a new terminal. Go to folder `ros2_ws` :
+For this last experiment, you will need to open two terminals. 
+
+In the first terminal, go to the root folder of our project `UNetyEmu`, and run the following:
 
 ```bash
 cd ros2_ws
-```
-
-Launch the work environment in that terminal:
-
-```bash
 source install/setup.bash
-```
-
-First Run:
-
-```bash
 ros2 run examplePackage droneKeyboardControl drone003Camera
 ```
+This will allow you to enable remote control of `drone003`. Be sure to check the available control keys, which can be found in the Unity scene menu.
 
-Then, open a new terminal. Go to folder `ros2_ws` :
+Then, in the second terminal, go to the root folder of our project `UNetyEmu`, and run the following:
+
 
 ```bash
 cd ros2_ws
-```
-
-Launch the work environment in that terminal:
-
-```bash
 source install/setup.bash
-```
-
-And Run:
-
-```bash
 ros2 run examplePackage yolo_detector drone003Camera
 ```
 
-This will open a terminal for controlling the drone003 in real time. Be sure to check the available control keys, which can be found in the Unity scene menu. Additionally, the last command enables the display of object detection in the scene, while you can continue to fly the drone and explore the area.
+This will allow you to run and observe object detection in real-time using a YOLOv8 node trained to detect trees and ground vehicles.
+
+> NOTE: Since this is a demonstration, this script will run the YOLO node using only the CPU to avoid compatibility issues between the GPU and PyTorch/CUDA.
+
+
+
+### 4. Ground vehicles: Teleoperation of car001
+
+Open a new terminal. Go to the root folder of our project `UNetyEmu`, and run the following:
+
+```bash
+cd ros2_ws
+source install/setup.bash
+ros2 run examplePackage carKeyboardControl car001
+```
+
+The terminal will be enabled to accept keyboard input and allow you to control `car001`, which is currently in the scene. 
+
+Click within the open Unity scene and then click the menu button in the bottom right corner. A list of all available keyboard commands will appear. Switch the view in Unity until `car001` appears. For that, press the C key three time and the view should move from `drone001` to `drone002` to `drone003` and then to `car001`.
+
+From the terminal open with ROS, you will be able to remotely control it.
+
+> NOTE: Follow our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki) for a better understanding of how to use the keys.
 
 
 
@@ -364,5 +330,3 @@ This will open a terminal for controlling the drone003 in real time. Be sure to 
 Apache License
 Version 2.0, January 2004
 [http://www.apache.org/licenses/](http://www.apache.org/licenses/)
-
-

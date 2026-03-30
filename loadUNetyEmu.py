@@ -4,6 +4,7 @@ import platform # For OS detection
 import os # For file path handling
 import urllib.request
 import tarfile
+import sys
 
 # -------------------------------------------------
 
@@ -85,7 +86,15 @@ def launch_unity():
 
     # Launch Unity executable
     print(f"\nLaunching Unity executable:\n{UNITY_EXE}\n")
-    return subprocess.Popen(UNITY_EXE)
+    process = subprocess.Popen([UNITY_EXE])
+    try:
+        process.wait()
+    except KeyboardInterrupt:
+        print("\nCtrl+C detected. Closing Unity...")
+        process.terminate()
+        process.wait()
+        print("Unity closed.")
+        sys.exit(0)
 
 # -------------------------------------------------
 
