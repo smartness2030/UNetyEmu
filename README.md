@@ -1,5 +1,10 @@
 # UNetyEmu: Unity-based simulator for aerial and non-aerial vehicles with integrated network emulation
 
+[![Platform](https://img.shields.io/badge/Platform-Windows-blue.svg)]()
+[![Engine](https://img.shields.io/badge/Engine-Unity-black.svg)]()
+[![Network](https://img.shields.io/badge/Network-Mininet--WiFi-orange.svg)]()
+[![Languages](https://img.shields.io/badge/Languages-C%23%20%7C%20Python-purple.svg)]()
+
 <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/Selos_SBRC25_new.png" height="120">
 
 **UNetyEmu** is a novel framework that combines real-time network emulation with high-fidelity mobility simulation, enabling realistic experimentation with both aerial and non-aerial autonomous vehicles. This integration allows researchers to evaluate vehicle coordination under dynamic communication conditions typical of smart city scenarios using 5G (and beyond) networks. Unlike existing experimental platforms, UNetyEmu provides online and offline control connectivity states, supports network emulation, and allows evaluating algorithms related to multiple drones, such as obstacle avoidance, path planning, logistics, and coordination, among others.
