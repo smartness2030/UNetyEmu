@@ -1,55 +1,54 @@
-# UNetyEmu: Unity-based simulator for aerial and non-aerial vehicles with integrated network emulation
+# Multi UAVs Preflight Planning in a Shared and Dynamic Airspace
 
-<img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/Selos_SBRC25_new.png" height="120">
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-blue.svg)]()
+[![Engine](https://img.shields.io/badge/Engine-Unity-black.svg)]()
+[![Language](https://img.shields.io/badge/Language-C%23-purple.svg)]()
 
-**UNetyEmu** is a novel framework that combines real-time network emulation with high-fidelity mobility simulation, enabling realistic experimentation with both aerial and non-aerial autonomous vehicles. This integration allows researchers to evaluate vehicle coordination under dynamic communication conditions typical of smart city scenarios using 5G (and beyond) networks. Unlike existing experimental platforms, UNetyEmu provides online and offline control connectivity states, supports network emulation, and allows evaluating algorithms related to multiple drones, such as obstacle avoidance, path planning, logistics, and coordination, among others.
+Preflight planning for large-scale Unmanned Aerial Vehicle (UAV) fleets in dynamic, shared airspace presents significant challenges, including temporal No-Fly Zones (NFZs), heterogeneous vehicle profiles, and strict delivery deadlines. While Multi-Agent Path Finding (MAPF) provides a formal framework, existing methods often lack the scalability and flexibility required for real-world Unmanned Traffic Management (UTM). We propose DTAPP-IICR: a Delivery-Time Aware Prioritized Planning method with Incremental and Iterative Conflict Resolution. Our framework first generates an initial solution by prioritizing missions based on urgency. Secondly, it computes roundtrip trajectories using SFIPP-ST, a novel 4D single-agent planner (Safe Flight Interval Path Planning with Soft and Temporal Constraints). SFIPP-ST handles heterogeneous UAVs, strictly enforces temporal NFZs, and models inter-agent conflicts as soft constraints. Subsequently, an iterative Large Neighborhood Search, guided by a geometric conflict graph, efficiently resolves any residual conflicts. A completeness-preserving directional pruning technique further accelerates the 3D search. On benchmarks with temporal NFZs, DTAPP-IICR achieves near-100% success with fleets of up to 1,000 UAVs and gains up to 50% runtime reduction from pruning, outperforming batch Enhanced Conflict-Based Search in the UTM context. Scaling successfully in realistic city-scale operations where other priority-based methods fail even at moderate deployments, DTAPP-IICR is positioned as a practical and scalable solution for preflight planning in dense, dynamic urban airspace.
 
-## Publications
-
-This repository has been used in the following demo publications (you can use both to reference our work):
-
-1. **Rodriguez Cesen, M.; Góes de Castro, A.; Santana, I.; Fontes, R. R.; R. Cesen, F.; Esteve Rothenberg, C.** (2025).  
-   *UNetyEmu: Unity-based simulator for aerial and non-aerial vehicles with integrated network emulation.*  
-   In **43rd Brazilian Symposium on Computer Networks and Distributed Systems (SBRC 2025)**, Natal/RN, Brazil.  
-   DOI: [https://doi.org/10.5753/sbrc_estendido.2025.7122](https://doi.org/10.5753/sbrc_estendido.2025.7122)
-
-2. **Rodriguez, M.; Góes de Castro, A.; Fontes, R.; Rodriguez, F.; Rothenberg, C.** (2025).  
-   *An Integrated Framework for Network Emulation and Multi-vehicle Algorithm Testing.*  
-   In **Proceedings of the ACM SIGCOMM 2025 Posters and Demos (SIGCOMM ’25)**.  
-   DOI: [https://doi.org/10.1145/3744969.3748436](https://doi.org/10.1145/3744969.3748436)
-
-## Preview
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/gifVehiclesScenario.gif?raw=true" height="220">
-  <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/gifRoutePlanning.gif?raw=true" height="220">
-</p>
-<p align="center">
-  <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/gif2.gif?raw=true" height="220">
-  <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/gif3.gif?raw=true" height="220">
-</p>
-<p align="center">
-  <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/gif4.gif?raw=true" height="320">
-</p>
-<p align="center">
-  <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/gif5.gif?raw=true" height="350">
+  <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/gifRoutePlanning.gif?raw=true" height="350">
 </p>
 
-## Team
 
-Mauricio Rodriguez Cesen ([m272321@dac.unicamp.br](mailto:m272321@dac.unicamp.br)) | School of Electrical and Computer Engineering (FEEC), Universidade Estadual de Campinas (UNICAMP), São Paulo, Brazil
 
-Ariel Góes de Castro ([a272319@dac.unicamp.br](mailto:a272319@dac.unicamp.br)) | School of Electrical and Computer Engineering (FEEC), Universidade Estadual de Campinas (UNICAMP), São Paulo, Brazil
+## Repository for the Proposed Algorithm
 
-Ibini A. Santana ([206466@dac.unicamp.br](mailto:206466@dac.unicamp.br)) | School of Electrical and Computer Engineering (FEEC), Universidade Estadual de Campinas (UNICAMP), São Paulo, Brazil
+https://github.com/amathsow/4DPlanning
 
-Ramon R. Fontes ([ramon.fontes@ufrn.br](mailto:ramon.fontes@ufrn.br)) | Leading Advanced Technologies Center of Excellence (LANCE), Universidade Federal do Rio Grande do Norte (UFRN), Rio Grande do Norte, Brazil
 
-Fabricio R. Cesen ([fabricio.rodriguezcesen@telefonica.com](mailto:fabricio.rodriguezcesen@telefonica.com)) | Telefónica Research, Barcelona, Spain
 
-Christian Esteve Rothenberg ([chesteve@unicamp.br](mailto:chesteve@unicamp.br)) | School of Electrical and Computer Engineering (FEEC), Universidade Estadual de Campinas (UNICAMP), São Paulo, Brazil
+## Structure of this repository for the UNetyEmu simulator
 
-# Content of the Wiki documentation
+```
+├── Assets  
+│   ├── DepthCameraImages  
+│   ├── MissionsLogs  
+│   ├── Models  
+│   ├── Resources  
+│   ├── Scenes  
+│   ├── Scripts
+│   │   ├── Algorithms  
+│   │   ├── CameraSetting  
+│   │   ├── Controllers  
+│   │   ├── GeneralManagementScripts  
+│   │   ├── GeneralSettings  
+│   │   ├── GetFeatures  
+│   │   ├── PlayersDynamics  
+│   │   └── Sensors  
+│   └── TextMesh Pro  
+├── ImagesDoc  
+├── Packages  
+├── ProjectSettings  
+├── Assembly-CSharp-Editor.csproj  
+├── Assembly-CSharp.csproj  
+├── LICENSE  
+└── README  
+```
+
+
+## Wiki documentation
 
 - [a. Repository structure](https://github.com/intrig-unicamp/UNetyEmu/wiki/a.-Repository-structure)
 - [b. Basic information](https://github.com/intrig-unicamp/UNetyEmu/wiki/b.-Basic-information)
@@ -67,63 +66,28 @@ Christian Esteve Rothenberg ([chesteve@unicamp.br](mailto:chesteve@unicamp.br)) 
     - [Third Scenario Demo (Unity + Mininet-WiFi)](https://github.com/intrig-unicamp/UNetyEmu/wiki/f.-Experiments#third-scenario-demo-unity--mininet-wifi)
 - [Videos and Tutorials](https://github.com/intrig-unicamp/UNetyEmu/wiki/Videos-and-Tutorials)
 
-# Repository structure
 
-The repository is structured as follows, according to the files generated by a Unity project:
 
-```
-├── Assets  
-│   ├── DepthCameraImages  
-│   ├── MissionsLogs  
-│   ├── Models  
-│   ├── Resources  
-│   ├── Scenes  
-│   ├── Scripts
-│   │   ├── Algorithms  
-│   │   ├── CameraSetting  
-│   │   ├── Controllers  
-│   │   ├── GeneralManagementScripts  
-│   │   ├── GeneralSettings  
-│   │   ├── GetFeatures  
-│   │   ├── Network
-│   │   │   └── mininet  
-│   │   ├── PlayersDynamics  
-│   │   └── Sensors  
-│   └── TextMesh Pro  
-├── ImagesDoc  
-├── Packages  
-├── ProjectSettings  
-├── Assembly-CSharp-Editor.csproj  
-├── Assembly-CSharp.csproj  
-├── LICENSE  
-└── README  
+## Citation
+
+Sow, A.; Rodriguez, M.; de Oliveira, F.; Wzorek, M.; de Leng, D.; Tiger, M.; Heintz, F.; Rothenberg, C. (2026). Multi UAVs Preflight Planning in a Shared and Dynamic Airspace. In Proceedings of the 25th International Conference on Autonomous Agents and Multiagent Systems (AAMAS 2026). Accepted for publication. Pre-print version: [https://doi.org/10.48550/arXiv.2602.12055](https://doi.org/10.48550/arXiv.2602.12055)
+
+```bibtex
+@inproceedings{arxiv_aamas26,
+    author        = {Sow, Amath and Rodriguez, Mauricio and de Oliveira, Fabiola and Wzorek, Mariusz and de Leng, Daniel and Tiger, Mattias and Heintz, Fredrik and Rothenberg, Christian},
+    title         = {Multi UAVs Preflight Planning in a Shared and Dynamic Airspace},
+    booktitle     = {Proceedings of the 25th International Conference on Autonomous Agents and Multiagent Systems (AAMAS 2026)},
+    year          = {2026},
+    note          = {Accepted for publication},
+    eprint        = {2602.12055},
+    archivePrefix = {arXiv},
+    primaryClass  = {cs.MA},
+    repo = {Algorithm source code: https://github.com/amathsow/4DPlanning. The repository for the simulator used in this work is available at the following link in the branch corresponding to the event: https://github.com/intrig-unicamp/UNetyEmu}
+}
 ```
 
-# Wiki Documentation
 
-For detailed information on the basic hardware and software requirements, dependencies, installation process and experiments presented in this first version of UNetyEmu, please continue to the full documentation on the [Wiki](https://github.com/intrig-unicamp/UNetyEmu/wiki).
-
-# Videos and Tutorials
-
-Below are a series of videos/tutorials to help better understand the initial configurations of UNetyEmu, along with demonstration of different simulation and emulation scenarios:
-
-#### New scenario using the integration of aerial and non-aerial vehicles (Demo submitted for SIGCOMM'25) [[link]](https://drive.google.com/file/d/1Rhcu-AYL5db2wYJLru0RDd6B5Ee99U6q/view?usp=sharing)
-
-#### New scenario under testing [[link]](https://drive.google.com/file/d/1h2DoY7kCmZLnBh2ttD5ZbnoSAHUNVSdn/view?usp=sharing)
-
-#### Scenario 3 Video [[link]](https://drive.google.com/file/d/18yqCbzED_H9MR-PKZ7Ri4imRvHL9sclz/view?usp=sharing)
-
-#### Scenario 2 Video [[link]](https://drive.google.com/file/d/1N3_DMFN2B2JJavu1VajSF_WvZa_i0CeX/view?usp=sharing)
-
-#### Scenario 1 Video [[link]](https://drive.google.com/file/d/16ZBhUAti659bQh3IR_0s_TT6xBANPX9x/view?usp=sharing)
-
-#### Opening Unity Project Video [[link]](https://drive.google.com/file/d/16iLVtsC29Wp9RyhF5cUQ0yMUbJCx-Nl0/view?usp=sharing)
-
-#### Documentation Video [[link]](https://drive.google.com/file/d/1fTIsD1m1qx0rkB-2y076hkf2bi00-U7O/view?usp=sharing)
-
-#### Unity Account Video [[link]](https://drive.google.com/file/d/1JxhwFSFr20KYXteRk9xQh-OJWBcP9Ps4/view?usp=sharing)
-
-# LICENSE
+## License
 
 Apache License
 Version 2.0, January 2004
