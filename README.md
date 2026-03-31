@@ -1,7 +1,6 @@
 # An Integrated Framework for Network Emulation and Multi-vehicle Algorithm Testing
 
 [![Platform](https://img.shields.io/badge/Platform-Windows-blue.svg)]()
-[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)]()
 [![Engine](https://img.shields.io/badge/Engine-Unity-black.svg)]()
 [![Network](https://img.shields.io/badge/Network-Mininet--WiFi-orange.svg)]()
 [![Languages](https://img.shields.io/badge/Languages-C%23%20%7C%20Python-purple.svg)]()
