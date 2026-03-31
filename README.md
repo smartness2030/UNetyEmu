@@ -123,6 +123,32 @@ Below are a series of videos/tutorials to help better understand the initial con
 
 #### Unity Account Video [[link]](https://drive.google.com/file/d/1JxhwFSFr20KYXteRk9xQh-OJWBcP9Ps4/view?usp=sharing)
 
+
+
+# Citation
+
+Rodriguez Cesen, M.; Góes de Castro, A.; Santana, I.; Fontes, R. R.; R. Cesen, F.; Esteve Rothenberg, C. (2025). UNetyEmu: Unity-based simulator for aerial and non-aerial vehicles with integrated network emulation.In 43rd Brazilian Symposium on Computer Networks and Distributed Systems (SBRC 2025), Natal/RN, Brazil. DOI: [https://doi.org/10.5753/sbrc_estendido.2025.7122](https://doi.org/10.5753/sbrc_estendido.2025.7122)
+
+```bibtex
+@inproceedings{sbrc25,
+    author = {Rodriguez, Mauricio and de Castro, Ariel and Santana, Ibini and Fontes, Ramon and Rodriguez, Fabricio and Rothenberg, Christian},
+    title = {UNetyEmu: Unity-based simulator for aerial and non-aerial vehicles with integrated network emulation},
+    booktitle = {Companion Proceedings of the 43rd Brazilian Symposium on Computer Networks and Distributed Systems},
+    location = {Natal/RN},
+    year = {2025},
+    keywords = {},
+    issn = {2177-9384},
+    pages = {100--111},
+    publisher = {SBC},
+    address = {Porto Alegre, RS, Brasil},
+    doi = {10.5753/sbrc_estendido.2025.7122},
+    url = {https://sol.sbc.org.br/index.php/sbrc_estendido/article/view/35864},
+    repo = {The repository for the simulator used in this work is available at the following link in the branch corresponding to the event: https://github.com/intrig-unicamp/UNetyEmu}
+}
+```
+
+
+
 # LICENSE
 
 Apache License
