@@ -12,7 +12,7 @@ import sys
 EXECUTABLE_NAME = "built_up_UNetyEmuROS/smallcity1.x86_64"
 
 # GitHub Release download URL
-DOWNLOAD_URL = "https://github.com/intrig-unicamp/UNetyEmu/releases/download/sbrc26/smallcity1-linux.tar.gz"
+DOWNLOAD_URL = "https://github.com/intrig-unicamp/UNetyEmu/releases/download/sbrc26-release/smallcity1-linux.tar.gz"
 
 # Archive name after download
 ARCHIVE_NAME = "smallcity1-linux.tar.gz"
