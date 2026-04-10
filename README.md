@@ -103,7 +103,7 @@ To validate our contributions, we designed an urban delivery scenario that simul
 | GPU | Integrated | Dedicated GPU (NVIDIA or AMD) |
 | Disk | 5 GB free | 10 GB free |
 
-> Note: A dedicated GPU is recommended for smooth rendering of the Unity scene with multiple active vehicles and sensors.
+> **Note:** A dedicated GPU is recommended for smooth rendering of the Unity scene with multiple active vehicles and sensors.
 
 
 ### Execution Modes
@@ -131,7 +131,9 @@ To validate our contributions, we designed an urban delivery scenario that simul
 
 | Dependency | Version |
 |------------|---------|
-| ultralytics (YOLOv8) | Latest |
+| numpy | 1.26.4 |
+| opencv-python | 4.8.1.78 |
+| ultralytics (YOLOv8) | 8.4.36 |
 | readchar | Latest |
 
 ### Optional (Unity Editor — to modify the project)
@@ -170,7 +172,25 @@ sudo apt install gnome-terminal python3-pip
 ```
 
 
-### Step 3 — Clone this repository
+### Step 3 — Install Python libraries
+
+This will install all dependencies with their required versions:
+
+```bash
+pip install numpy==1.26.4
+pip install opencv-python==4.8.1.78 --no-deps
+pip install ultralytics==8.4.36 --no-deps
+pip install readchar
+```
+
+> **Note:** If, during installation, you see warnings that Ubuntu couldn't find the PATH to the folder where pip placed the executables, add that folder to the PATH:
+> ```bash
+> echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+> source ~/.bashrc
+> ```
+
+
+### Step 4 — Clone this repository
 
 ```bash
 git clone https://github.com/intrig-unicamp/UNetyEmu.git
@@ -178,22 +198,6 @@ cd UNetyEmu
 ```
 
 or  download the [zipped project](https://github.com/intrig-unicamp/UNetyEmu/archive/refs/heads/main.zip) and navigate to the project's root folder `UNetyEmu-main/`.
-
-
-### Step 4 — Install Python libraries
-
-This will install the dependencies: `ultralytics`, `numpy`, and `readchar` 
-
-```bash
-pip install -r requirements.txt
-```
-
-> Note: If, during installation, you see warnings that Ubuntu couldn't find the PATH to the folder where pip placed the executables, add that folder to the PATH:
-
-```bash
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-```
 
 
 The installation is complete to run the quick demo using the pre-built Unity file.
@@ -255,7 +259,7 @@ This commands will allow you to send a list of steps to follow (pick up the pack
 
 In addition, in RViz2 you can see the point cloud updating in real-time as the drone makes the delivery.
 
-> IMPORTANT NOTE: This command will behave as expected if it is executed **ONLY ONCE** at any point during the simulation. For a better understanding of how the drone executes this mission, please refer to our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki).
+> **IMPORTANT NOTE:** This command will behave as expected if it is executed **ONLY ONCE** at any point during the simulation. For a better understanding of how the drone executes this mission, please refer to our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki).
 
 
 
@@ -275,7 +279,7 @@ ros2 run examplePackage waypointPublisher drone002Camera
 
 This terminal will stay open to send new target positions to `drone002`. For example, an input of `5 10 5 90 3` will send a command to `drone002` to fly to the position longitude `x=5`, altitude `y=10`, latitude `z=5`, with an orientation of `90 degrees` and a speed of `3 m/s`.
 
-> NOTE: Follow our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki) for a better understanding of how to view the depth camera output of `drone002` on `RViz2`.
+> **Note:** Follow our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki) for a better understanding of how to view the depth camera output of `drone002` on `RViz2`.
 
 
 
@@ -306,7 +310,7 @@ ros2 run examplePackage yolo_detector drone003Camera
 
 This will allow you to run and observe object detection in real-time using a YOLOv8 node trained to detect trees and ground vehicles.
 
-> NOTE: Since this is a demonstration, this script will run the YOLO node using only the CPU to avoid compatibility issues between the GPU and PyTorch/CUDA.
+> **Note:** Since this is a demonstration, this script will run the YOLO node using only the CPU to avoid compatibility issues between the GPU and PyTorch/CUDA.
 
 
 
@@ -324,7 +328,7 @@ ros2 run examplePackage carKeyboardControl car001
 
 The terminal will be enabled to accept keyboard input and allow you to remotely control `car001`, which is currently in the scene. 
 
-> NOTE: Follow our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki) for a better understanding of how to use the keys to properly control the car.
+> **Note:** Follow our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki) for a better understanding of how to use the keys to properly control the car.
 
 
 
