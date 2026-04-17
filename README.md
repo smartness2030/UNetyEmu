@@ -1,7 +1,4 @@
-# UNetyEmuROS
-
-> **Paper submitted:** "UNetyEmuROS: A Unity-Based Multi-Vehicle Simulator with Physically-Grounded Dynamics and ROS2 Sensor Integration"  
-> **Venue:** SBRC 2026 — Salão de Ferramentas
+# UNetyEmuROS: A Unity-Based Multi-Vehicle Simulator with Physically-Grounded Dynamics and ROS2 Sensor Integration
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![ROS2](https://img.shields.io/badge/ROS2-Humble-green.svg)](https://docs.ros.org/en/humble/)
@@ -92,7 +89,7 @@ To validate our contributions, we designed an urban delivery scenario that simul
 ### Operating System
 
 - **Ubuntu 22.04 LTS (Linux x86\_64)**
-- **`gnome-terminal`** must be available, as `launchDemo.sh` uses it to open separate terminal windows.
+
 
 ### Hardware Requirements
 
@@ -114,7 +111,7 @@ To validate our contributions, we designed an urban delivery scenario that simul
 
 # Dependencies
 
-### Required (quick demo)
+### Required — Quick Demo (pre-built Unity executable)
 
 | Dependency | Version |
 |------------|---------|
@@ -124,30 +121,39 @@ To validate our contributions, we designed an urban delivery scenario that simul
 | ROS-TCP-Endpoint | Included in the workspace `ros2_ws/src/` |
 | RViz2 | Included with ROS2 Desktop |
 | Python | 3.10+ |
-| gnome-terminal | Any |
+| gnome-terminal + xterm | Any |
 | pip | 22.0.0+ |
 
-### Required (for displaying detected objects and teleoperation via keyboard)
+### Python packages — Simulator core
 
-| Dependency | Version |
-|------------|---------|
-| numpy | 1.26.4 |
+| Package | Version | 
+|---------|--------|
+| numpy | 1.26.4 | 
 | opencv-python | 4.8.1.78 |
-| ultralytics (YOLOv8) | 8.4.36 |
 | readchar | Latest |
 
-### Optional (Unity Editor — to modify the project)
+### Other Python packages — For the demo with object detection using YOLO
 
-| Dependency | Version |
-|------------|---------|
-| Unity Hub | Latest |
-| Unity Editor | 2022.3.62f2 |
+| Package | Version |
+|---------|--------|
+| torch | 2.11.0+cpu | 
+| torchvision | 0.26.0+cpu |
+| ultralytics | 8.4.36 |
+| polars | Latest |
+| ultralytics-thop | Latest |
 
 ### Internal ROS2 packages (included in the workspace `ros2_ws/src/` )
 
 | Package | Description |
 |---------|-------------|
 | `examplePackage` | ROS2 nodes: keyboard control, mission publisher, waypoint publisher, camera receiver, YOLOv8 detection |
+
+### Optional — Unity Editor (to modify the scene settings)
+
+| Dependency | Version |
+|------------|---------|
+| Unity Hub | Latest |
+| Unity Editor | 2022.3.62f2 |
 
 
 
@@ -161,33 +167,43 @@ The execution of this artifact is risk-free for evaluators. UNetyEmuROS uses as 
 
 ### Step 1 — Install ROS2 Humble
 
-Follow the [ROS2 Installation Guide](https://github.com/intrig-unicamp/UNetyEmu/wiki) with step-by-step instructions.
+Follow our documentation in the [Installation](https://github.com/intrig-unicamp/UNetyEmu/wiki/SBRC26-Home) section, with step-by-step instructions.
 
 
-### Step 2 — Make sure you have gnome-terminal and pip installed
+### Step 2 — Make sure you have gnome-terminal, xterm, and pip installed
 
 ```bash
 sudo apt update
-sudo apt install gnome-terminal python3-pip
+sudo apt install gnome-terminal xterm python3-pip
 ```
 
 
 ### Step 3 — Install Python libraries
 
-This will install all dependencies with their required versions:
+This will install all dependencies with their required versions.
+
+- Simulator core:
 
 ```bash
 pip install numpy==1.26.4
 pip install opencv-python==4.8.1.78 --no-deps
-pip install ultralytics==8.4.36 --no-deps
 pip install readchar
 ```
 
-> **Note:** If, during installation, you see warnings that Ubuntu couldn't find the PATH to the folder where pip placed the executables, add that folder to the PATH:
+- For the demo with object detection using YOLO:
+
+```bash
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+pip install ultralytics==8.4.36 --no-deps
+pip install polars ultralytics-thop
+```
+
+> **Note:** `ultralytics` is installed with `--no-deps` to avoid version conflicts with `numpy` and `opencv`. `torch` and its companions are installed separately for the same reason. In addition, if you see a warning that the install path is not in `PATH`:
 > ```bash
 > echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 > source ~/.bashrc
 > ```
+
 
 
 ### Step 4 — Clone this repository
@@ -200,13 +216,16 @@ cd UNetyEmu
 or  download the [zipped project](https://github.com/intrig-unicamp/UNetyEmu/archive/refs/heads/main.zip) and navigate to the project's root folder `UNetyEmu-main/`.
 
 
-The installation is complete to run the quick demo using the pre-built Unity file.
+The installation is now complete to run the quick demo using the pre-built Unity file.
 
 
 
 ### Step 5 (optional) — Install Unity Hub and Unity Editor
 
-To edit the scene and open the Unity project, follow the [Unity Installation Guide](https://github.com/intrig-unicamp/UNetyEmu/wiki) with step-by-step instructions.
+To edit the scene and open the Unity project, follow our documentation in the [Installation](https://github.com/intrig-unicamp/UNetyEmu/wiki/SBRC26-Home) section, with step-by-step instructions.
+
+Then check out our [Basic-Information](https://github.com/intrig-unicamp/UNetyEmu/wiki/SBRC26-Basic-Information) section in the documentation, to better understand how to run the experiments using the scene in the Unity Editor.
+
 
 
 
@@ -230,6 +249,8 @@ In summary, the connection between ROS and Unity has been established, and you w
 <p align="center">
   <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/demoLaunched.png" height="500" alt="demoLaunched.png">
 </p>
+
+For more details, please refer to the relevant section in our documentation: [Minimum Test](https://github.com/intrig-unicamp/UNetyEmu/wiki/SBRC26-Minimum-Test).
 
 
 
@@ -259,7 +280,7 @@ This commands will allow you to send a list of steps to follow (pick up the pack
 
 In addition, in RViz2 you can see the point cloud updating in real-time as the drone makes the delivery.
 
-> **IMPORTANT NOTE:** This command will behave as expected if it is executed **ONLY ONCE** at any point during the simulation. For a better understanding of how the drone executes this mission, please refer to our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki).
+> **IMPORTANT NOTE:** This command will behave as expected if it is executed **ONLY ONCE** at any point during the simulation. For a better understanding of how the drone executes this mission, please refer to our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki/SBRC26-Home).
 
 
 
@@ -279,7 +300,7 @@ ros2 run examplePackage waypointPublisher drone002Camera
 
 This terminal will stay open to send new target positions to `drone002`. For example, an input of `5 10 5 90 3` will send a command to `drone002` to fly to the position longitude `x=5`, altitude `y=10`, latitude `z=5`, with an orientation of `90 degrees` and a speed of `3 m/s`.
 
-> **Note:** Follow our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki) for a better understanding of how to view the depth camera output of `drone002` on `RViz2`.
+> **Note:** Follow our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki/SBRC26-Home) for a better understanding of how to view the depth camera output of `drone002` on `RViz2`.
 
 
 
@@ -328,7 +349,7 @@ ros2 run examplePackage carKeyboardControl car001
 
 The terminal will be enabled to accept keyboard input and allow you to remotely control `car001`, which is currently in the scene. 
 
-> **Note:** Follow our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki) for a better understanding of how to use the keys to properly control the car.
+> **Note:** Follow our [documentation](https://github.com/intrig-unicamp/UNetyEmu/wiki/SBRC26-Home) for a better understanding of how to use the keys to properly control the car.
 
 
 
