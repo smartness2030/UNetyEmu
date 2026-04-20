@@ -16,6 +16,23 @@ if [ ! -d "$ROS_WS" ]; then
   exit 1
 fi
 
+# Terminal launcher
+open_terminal() {
+    local cmd="$1"
+    if command -v gnome-terminal &>/dev/null && gnome-terminal --version &>/dev/null 2>&1; then
+        gnome-terminal -- bash -ic "$cmd" &
+    elif command -v xterm &>/dev/null; then
+        xterm -e bash -ic "$cmd" &
+    elif command -v x-terminal-emulator &>/dev/null; then
+        x-terminal-emulator -e bash -ic "$cmd" &
+    elif command -v konsole &>/dev/null; then
+        konsole -e bash -ic "$cmd" &
+    else
+        echo "Error: No terminal emulator found. Install xterm: sudo apt install xterm"
+        exit 1
+    fi
+}
+
 # Build the ROS2 workspace
 echo "\n----- Build ROS2 workspace -----"
 ./buildWorkspace.sh
@@ -27,7 +44,7 @@ sleep $STARTUP_DELAY
 echo "\n----- Launching processes in separate terminals -----"
 
 # Terminal 1: Launch Unity executable
-gnome-terminal -- bash -ic "
+open_terminal "
 echo -e '\nStarting Unity executable...';
 python3 loadUNetyEmu.py;
 exec bash
@@ -48,7 +65,7 @@ echo "\nUnity started. Waiting extra time to launch RViz..."
 sleep $STARTUP_DELAY
 
 # Terminal 2: Run ROS-Unity bridge
-gnome-terminal -- bash -ic "
+open_terminal "
 echo '\nStarting ROS bridge...';
 # Kill any process using the TCP port to avoid conflicts
 fuser -k $TCP_PORT/tcp || true
@@ -64,7 +81,7 @@ exec bash
 sleep $STARTUP_DELAY
 
 # Terminal 3: Launch RViz
-gnome-terminal -- bash -ic "
+open_terminal "
 echo '\nLaunching RViz2...';
 source /opt/ros/humble/setup.bash
 source $PWD/$ROS_WS/install/setup.bash
