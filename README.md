@@ -163,7 +163,73 @@ The execution of this artifact is risk-free for evaluators. UNetyEmuROS uses as 
 
 
 
+
+
+
+
 # Installation
+
+## Option A — Preconfigured Virtual Machine (VirtualBox)
+
+For convenience, we provide two preconfigured virtual machine images (`.ova`) that already include all required dependencies and the project fully configured, ready to run without manual installation.
+
+### System Requirements
+
+Running either virtual machine requires a host computer with sufficient resources, since the VM runs both Unity and the ROS2 environment internally. We recommend the following **minimum** specifications:
+
+| Component | Minimum | Recommended |
+|-----------|---------|-------------|
+| RAM | 12 GB | 16 GB or more |
+| CPU | 4 cores | 6 cores or more |
+| Disk Space | 40 GB free | 60 GB free (Full version) |
+| GPU | Not required | Dedicated GPU for better Unity performance |
+
+### Available Images
+
+**Quick Demo** — ROS2 + pre-built Unity executable (estimated size: 10 GB)  
+https://drive.google.com/file/d/1sLCmxuaGIYozZTQy12e_1Z_PDIEq_5Yq/view?usp=sharing
+
+**Full Project** — ROS2 + Unity Editor included (estimated size: 15 GB)  
+https://drive.google.com/file/d/1y3og7DFiSzEFlu5gv2B32OJfOoLnOPkV/view?usp=sharing
+
+The **Quick Demo** version is recommended for users who only want to run the demonstration.  
+The **Full Project** version includes the Unity Editor, allowing scene modification.
+
+### VirtualBox
+
+These images were exported using **VirtualBox 7.2.6**. To ensure proper import, download **VirtualBox 7.2.6 or newer** for your platform (Windows or Linux) from the official website:
+https://www.virtualbox.org/wiki/Downloads
+
+#### Instructions
+
+Open VirtualBox and go to:
+
+`File → Import Appliance`
+
+Then select the downloaded `.ova` file.
+
+Inside the virtual machine, the project is located at:
+
+```bash
+/home/unetyemuros/git/UNetyEmu
+```
+
+If a password is required, use:
+
+```text
+unetyemuros
+```
+
+> **Note:** Allocating fewer resources than recommended may result in lower performance or instability during simulation. If your machine does not have enough available resources, we recommend installing the simulator directly on your host computer instead. Follow the steps below.
+
+
+
+
+
+
+
+
+## Option B — Native Installation
 
 ### Step 1 — Install ROS2 Humble
 
