@@ -1,29 +1,35 @@
-# ------------------------------------------------------
+# ----------------------------------------------------------------------
 # Copyright 2026 INTRIG & SMARTNESS
 # Licensed under Apache 2.0: http://www.apache.org/licenses/LICENSE-2.0
-# ------------------------------------------------------
+# ----------------------------------------------------------------------
 
 # Libraries
-import rclpy
-from rclpy.node import Node
-from std_msgs.msg import Float32MultiArray
-import sys
-import threading
-import readchar
-import time
+import rclpy  # ROS 2 client library
+from rclpy.node import Node  # Base class for ROS 2 nodes
+from std_msgs.msg import Float32MultiArray  # Same command layout Unity expects for drones
+import sys  # Command-line arguments
+import threading  # Non-blocking keyboard reader alongside rclpy timers
+import readchar  # Raw terminal key reads for WASD-style controls
+import time  # Delta time for ramps and auto-release delays
+
+# ----------------------------------------------------------------------
 
 # Node to control a drone using the keyboard. Publishes throttle, pitch, roll and yaw commands
 class DroneKeyboardControl(Node):
     def __init__(self, droneId):
         super().__init__("droneKeyboardControl")
+
+        # Publisher topic matches Unity MoveDroneROS (gameObject.name + "_keyboardInput")
         self.topicName = f"{droneId}_keyboardInput"
         self.publisher = self.create_publisher(Float32MultiArray, self.topicName, 10)
 
+        # Current axis values sent to Unity each tick
         self.throttle = 0.0
         self.pitch    = 0.0
         self.roll     = 0.0
         self.yaw      = 0.0
 
+        # Ramping parameters (units per second style tuning)
         self.throttleRampRate   = 3.0
         self.inputRampUpRate    = 4.0
         self.inputRampDownRate  = 6.0
@@ -34,6 +40,7 @@ class DroneKeyboardControl(Node):
         self.key_thread = threading.Thread(target=self.key_loop, daemon=True)
         self.key_thread.start()
 
+        # Timer-driven control loop at 50 Hz
         self.create_timer(0.02, self.update)
         self.last_time = time.time()
 
@@ -41,7 +48,7 @@ class DroneKeyboardControl(Node):
             f"  T/G = Throttle ↑↓ | I/K = Pitch | J/L = Roll | F/H = Yaw | Q = Exit"
         )
 
-    # Receive keyboard commands
+    # Function to receive keyboard commands in a background thread
     def key_loop(self):
         KEY_MAP = {
             "t": "throttle_up",   "g": "throttle_down",
@@ -65,11 +72,12 @@ class DroneKeyboardControl(Node):
                     target=self._auto_release, args=(action,), daemon=True
                 ).start()
     
-    #Remove the pressed key to improve control UI
+    # Function to clear a key after a short pulse (tap-to-step feel)
     def _auto_release(self, action):
         time.sleep(0.4)
         self.keys_held.discard(action)
 
+    # Function to integrate inputs each timer tick and publish
     def update(self):
         now = time.time()
         dt = now - self.last_time
@@ -79,14 +87,17 @@ class DroneKeyboardControl(Node):
         self._update_spring_axis(dt)
         self._publish()
 
+    # Function to clamp an axis to a safe range for Unity
     def _clamp(self, value, mn=-3, mx=3.0):
         return max(mn, min(mx, value))
 
+    # Function to move current toward target by at most delta per step
     def _move_towards(self, current, target, delta):
         if abs(target - current) <= delta:
             return target
         return current + delta if current < target else current - delta
 
+    # Function to ramp throttle with hold-to-accelerate and spring-back to zero
     def _update_throttle(self, dt):
         up   = "throttle_up"   in self.keys_held
         down = "throttle_down" in self.keys_held
@@ -103,11 +114,13 @@ class DroneKeyboardControl(Node):
 
         self.throttle = self._clamp(self.throttle)
 
+    # Function to update pitch / roll / yaw using the shared spring model
     def _update_spring_axis(self, dt):
         self.pitch = self._spring(self.pitch, "pitch_fwd",   "pitch_bwd",   dt)
         self.roll  = self._spring(self.roll,  "roll_right",  "roll_left",   dt)
         self.yaw   = self._spring(self.yaw,   "yaw_right",   "yaw_left",    dt)
 
+    # Function to spring an axis toward +1 / -1 while a key is held, else toward 0
     def _spring(self, value, pos_key, neg_key, dt):
         pos = pos_key in self.keys_held
         neg = neg_key in self.keys_held
@@ -121,11 +134,15 @@ class DroneKeyboardControl(Node):
 
         return self._clamp(value)
 
+    # Function to publish [throttle, pitch, roll, yaw] to Unity
     def _publish(self):
         msg = Float32MultiArray()
         msg.data = [self.throttle, self.pitch, self.roll, self.yaw]
         self.publisher.publish(msg)
 
+# ----------------------------------------------------------------------
+
+# Main routine to run the drone keyboard control node
 def main():
     
     # Allow drone ID to be passed as an argument, with default "drone003Camera"
@@ -137,5 +154,8 @@ def main():
     node.destroy_node()
     rclpy.shutdown()
 
+# ----------------------------------------------------------------------
+
+# Main function to run the script
 if __name__ == "__main__":
     main()

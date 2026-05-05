@@ -36,6 +36,7 @@ ros2_ws/log
 
 # Unity built files
 built_up_UNetyEmuROS/
+built_up_Windows/
 *.x86_64
 *_Data/
 *.tar.gz

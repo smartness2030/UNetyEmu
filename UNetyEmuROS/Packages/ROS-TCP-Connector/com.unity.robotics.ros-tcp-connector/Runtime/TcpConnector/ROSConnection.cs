@@ -479,6 +479,9 @@ namespace Unity.Robotics.ROSTCPConnector
 
         void Start()
         {
+            // Apply ROS endpoint from environment variables
+            ApplyRosEndpointFromEnvironment();
+
             InitializeHUD();
 
             HudPanel.RegisterHeader(DrawHeaderGUI);
@@ -488,6 +491,30 @@ namespace Unity.Robotics.ROSTCPConnector
 
             if (ConnectOnStart)
                 Connect();
+        }
+
+        // Allows launchers (e.g. loadUNetyEmu.py) to set UNETY_ROS_IP / UNETY_ROS_TCP_PORT instead of PlayerPrefs / HUD
+        void ApplyRosEndpointFromEnvironment()
+        {
+            var changed = false;
+            var envIp = Environment.GetEnvironmentVariable("UNETY_ROS_IP");
+            if (!string.IsNullOrWhiteSpace(envIp))
+            {
+                m_RosIPAddress = envIp.Trim();
+                PlayerPrefs.SetString(PlayerPrefsKey_ROS_IP, m_RosIPAddress);
+                changed = true;
+            }
+
+            var envPort = Environment.GetEnvironmentVariable("UNETY_ROS_TCP_PORT");
+            if (!string.IsNullOrWhiteSpace(envPort) && int.TryParse(envPort.Trim(), out var parsed) && parsed > 0 && parsed <= 65535)
+            {
+                m_RosPort = parsed;
+                PlayerPrefs.SetInt(PlayerPrefsKey_ROS_TCP_PORT, m_RosPort);
+                changed = true;
+            }
+
+            if (changed)
+                PlayerPrefs.Save();
         }
 
         public void Connect(string ipAddress, int port)

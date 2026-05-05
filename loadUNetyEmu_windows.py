@@ -5,33 +5,36 @@
 
 # Libraries
 import argparse
-import subprocess  # For launching Unity executable
-import platform  # For OS detection
 import os  # For file path handling
-import urllib.request
-import tarfile
+import platform  # For OS detection
+import subprocess  # For launching Unity executable
 import sys
+import urllib.request
+import zipfile
 
 # ----------------------------------------------------------------------
 
-# ROS-TCP defaults (VM: use hostname -I). Override with: python loadUNetyEmu.py --ip <IP>
+# ROS-TCP defaults (VM: use hostname -I). Override with: python loadUNetyEmu_windows.py --ip <IP>
 DEFAULT_ROS_TCP_IP = "127.0.0.1"
 DEFAULT_ROS_TCP_PORT = "10000"
 
 # Unity executable relative path
-EXECUTABLE_NAME = "built_up_UNetyEmuROS/smallcity1.x86_64"
+EXECUTABLE_NAME = "built_up_Windows/UNetyEmu.exe"
 
 # GitHub Release download URL
-DOWNLOAD_URL = "https://github.com/intrig-unicamp/UNetyEmu/releases/download/sbrc26-release/smallcity1-linux.tar.gz"
+DOWNLOAD_URL = (
+    "https://github.com/intrig-unicamp/UNetyEmu/releases/download/sbrc26-release/"
+    "smallcity1-windows.zip"
+)
 
 # Archive name after download
-ARCHIVE_NAME = "smallcity1-linux.tar.gz"
+ARCHIVE_NAME = "smallcity1-windows.zip"
 
 # ----------------------------------------------------------------------
 
 # Function to download and extract the Unity build from GitHub Release
 def download_build(dest_folder):
-    
+
     # Check if the build already exists
     print("\nBuild not found. Downloading from GitHub Release...")
 
@@ -46,24 +49,14 @@ def download_build(dest_folder):
     print("Extracting build...")
 
     # Extract the downloaded archive to the destination folder
-    with tarfile.open(archive_path, "r:gz") as tar:
-        tar.extractall(dest_folder)
+    with zipfile.ZipFile(archive_path, "r") as zf:
+        zf.extractall(dest_folder)
 
     # Remove the downloaded archive after extraction
     os.remove(archive_path)
 
     # Print completion message
     print("Extraction complete.\n")
-    
-# ----------------------------------------------------------------------
-
-# Function to check and set execute permissions for the Unity executable
-def secure_permission_to_execute(path):
-    
-    # Check if the file have execute permissions
-    if not os.access(path, os.X_OK):
-        print(f"Adding execute permission to: {path}")
-        subprocess.run(["chmod", "+x", path], check=True)
 
 # ----------------------------------------------------------------------
 
@@ -74,7 +67,7 @@ def launch_unity(ros_ip: str, ros_port: str):
     system = platform.system()
 
     # Check if the operating system is supported
-    if system != "Linux":
+    if system != "Windows":
         raise Exception("Unsupported operating system")
 
     # Get the directory of the current script
@@ -87,30 +80,35 @@ def launch_unity(ros_ip: str, ros_port: str):
     if not os.path.exists(UNITY_EXE):
         download_build(script_dir)
 
-    # Check if the file has execute permissions
-    secure_permission_to_execute(UNITY_EXE)
-
     # Check if the file exists
     if not os.path.exists(UNITY_EXE):
         raise FileNotFoundError(f"Executable not found in: {UNITY_EXE}")
 
     # Launch Unity executable
     env = os.environ.copy()
-    
+
     # Set the ROS-TCP endpoint environment variables to the provided IP and port
     env["UNETY_ROS_IP"] = ros_ip
     env["UNETY_ROS_TCP_PORT"] = ros_port
+
+    # Optional: new process group so the player can receive Ctrl+C independently when supported
+    creationflags = 0
+    if hasattr(subprocess, "CREATE_NEW_PROCESS_GROUP"):
+        creationflags = subprocess.CREATE_NEW_PROCESS_GROUP
+
     print(
         f"\nLaunching Unity executable:\n{UNITY_EXE}\n"
         f"ROS TCP → {env['UNETY_ROS_IP']}:{env['UNETY_ROS_TCP_PORT']}\n"
     )
-    process = subprocess.Popen([UNITY_EXE], env=env)
+    process = subprocess.Popen(
+        [UNITY_EXE], env=env, cwd=script_dir, creationflags=creationflags
+    )
     try:
         process.wait()
     except KeyboardInterrupt:
         print("\nCtrl+C detected. Closing Unity...")
         process.terminate()
-        process.wait()
+        process.wait(timeout=15)
         print("Unity closed.")
         sys.exit(0)
 
@@ -119,7 +117,7 @@ def launch_unity(ros_ip: str, ros_port: str):
 # Main routine to run communication with Unity
 def main():
     parser = argparse.ArgumentParser(
-        description="Lanza el build Linux de UNetyEmu con UNETY_ROS_IP / UNETY_ROS_TCP_PORT para ROS-TCP."
+        description="Lanza el build Windows de UNetyEmu con UNETY_ROS_IP / UNETY_ROS_TCP_PORT para ROS-TCP."
     )
     parser.add_argument(
         "--ip",
