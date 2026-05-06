@@ -61,10 +61,11 @@ UNetyEmu-main/
 │   └── connect.sh                                # Sources setup.bash and runs ros_tcp_endpoint
 ├── rviz/
 │   └── UNetyEmuROS_sensors.rviz                  # RViz2 sensor visualization config
-├── launchDemo.sh                                # Launches the complete demo
+├── launchDemo.sh                                 # Launches the complete demo
 ├── runROS.sh                                     # Starts the ROS2–Unity TCP bridge
 ├── buildWorkspace.sh                             # Builds the ROS2 workspace with colcon
-└── loadUNetyEmu.py                               # Downloads and launches the Unity build
+├── loadUNetyEmu.py                               # Downloads and launches the Unity build for Linux systems
+└── loadUNetyEmu_windows.py                       # (NEW) Downloads and launches the Unity build for Windows systems
 ```
 
 
@@ -171,11 +172,14 @@ The execution of this artifact is risk-free for evaluators. UNetyEmuROS uses as 
 
 ## Option A — Preconfigured Virtual Machine (VirtualBox)
 
-For convenience, we provide two preconfigured virtual machine images (`.ova`) that already include all required dependencies and the project fully configured, ready to run without manual installation.
+For your convenience, we provide a preconfigured Virtual Machine (VM) image `.ova` that already includes all the dependencies needed to run our simulator.
 
-### System Requirements
+Also, to avoid conflicts with the 3D acceleration that Unity requires to display the simulation correctly within a VM, we have chosen to run Unity directly on the host PC either on Linux or Windows (no need to install dependencies) and run ROS2 from the VM. 
 
-Running either virtual machine requires a host computer with sufficient resources, since the VM runs both Unity and the ROS2 environment internally. We recommend the following **minimum** specifications:
+
+### System Requirements for the host PC
+
+To run the virtual machine, you need a host PC (either Linux or Windows) with sufficient resources to run Unity on the host PC and ROS2 on the virtual machine. We recommend the following **minimum** specifications:
 
 | Component | Minimum | Recommended |
 |-----------|---------|-------------|
@@ -184,29 +188,53 @@ Running either virtual machine requires a host computer with sufficient resource
 | Disk Space | 40 GB free | 60 GB free (Full version) |
 | GPU | Not required | Dedicated GPU for better Unity performance |
 
-### Available Images
 
-**Quick Demo** — ROS2 + pre-built Unity executable (estimated size: 10 GB)  
-https://drive.google.com/file/d/1sLCmxuaGIYozZTQy12e_1Z_PDIEq_5Yq/view?usp=sharing
+In addition, to run Unity executable files, you only need **Python 3.9+** on the host PC. There is no need to install any dependencies; simply clone our repository on the host PC and download our `.ova` image to use it in VirtualBox.
 
-**Full Project** — ROS2 + Unity Editor included (estimated size: 15 GB)  
-https://drive.google.com/file/d/1y3og7DFiSzEFlu5gv2B32OJfOoLnOPkV/view?usp=sharing
+> **Note:** Allocating fewer resources than recommended may result in lower performance or instability during simulation. If your machine does not have enough available resources, we recommend installing the simulator directly on your host computer instead.
 
-The **Quick Demo** version is recommended for users who only want to run the demonstration.  
-The **Full Project** version includes the Unity Editor, allowing scene modification.
+
+### Available Image
+
+**Full Project** — ROS2 + Unity Editor included (estimated size: 23 GB)  
+https://drive.google.com/file/d/13UP_8Rpum-1CtK6TanjSYZfj_YwJsiSM/view?usp=sharing
+
+Once you've downloaded the VM in `.zip` format from the link above, we recommend unzipping it and keeping only the `.ova` file. That is, delete the download file to avoid wasting space on your computer.
+
 
 ### VirtualBox
 
-These images were exported using **VirtualBox 7.2.6**. To ensure proper import, download **VirtualBox 7.2.6 or newer** for your platform (Windows or Linux) from the official website:
+This image was exported using **VirtualBox 7.2.6**. To ensure a successful import, download **VirtualBox 7.2.6 or newer** for your platform (Windows or Linux) from the official website:
 https://www.virtualbox.org/wiki/Downloads
+
+Make sure you not only install VirtualBox but also include the **VirtualBox Extension Pack**, which is compatible with your version of **VirtualBox**. This extension pack is also available on the official website linked above.
+
 
 #### Instructions
 
-Open VirtualBox and go to:
+1. Once VirtualBox and its extension pack have been installed correctly, open it and go to:
 
 `File → Import Appliance`
 
-Then select the downloaded `.ova` file.
+Then select the downloaded `.ova` file and click **Finish** to start the import.
+
+2. Once the VM has finished importing, go to:
+
+`File → Tools → Network`
+
+Make sure you have a virtual network adapter for **“Host-only Networks”** available. If you don't have one, just click the **Create** button to add one.
+
+3. Click on the **UNetyEmuROS** VM and go to the network settings: 
+
+`Settings / Network`
+
+Make sure that **“Host-only Adapter”** is selected under `Attached to` for Adapter 1. Then select the `Name` that is available in your VirtualBox (it should show the adapter that was created in the previous step). Then, in `Promiscuous Mode`, select **“Allow All”**, and **refresh** the `MAC Address` to ensure a new one is generated when you open the VM.
+
+4. Finally, open the VM and log in using the password:
+
+```text
+unetyemuros
+```
 
 Inside the virtual machine, the project is located at:
 
@@ -214,16 +242,29 @@ Inside the virtual machine, the project is located at:
 /home/unetyemuros/git/UNetyEmu
 ```
 
-If a password is required, use:
+Or just open a terminal and run:
 
-```text
-unetyemuros
+```bash
+cd git/UNetyEmu/
 ```
 
-> **Note:** Allocating fewer resources than recommended may result in lower performance or instability during simulation. If your machine does not have enough available resources, we recommend installing the simulator directly on your host computer instead. Follow the steps below.
 
 
 
+### Clone the repository on the host PC
+
+From any location on the host computer, clone our repository:
+
+```bash
+git clone https://github.com/intrig-unicamp/UNetyEmu.git
+cd UNetyEmu
+```
+
+or  download the [zipped project](https://github.com/intrig-unicamp/UNetyEmu/archive/refs/heads/main.zip), unzip it, and navigate to the project's root folder `UNetyEmu-main/`.
+
+
+
+The installation is now complete to run the quick demo. 
 
 
 
@@ -298,6 +339,89 @@ Then check out our [Basic-Information](https://github.com/intrig-unicamp/UNetyEm
 
 # Minimum Test
 
+## Option A — If you chose the Preconfigured Virtual Machine Installation
+
+To run the quick demo, keep in mind that you will be launching a Unity application on the host PC while ROS2 is running on the VM. To do this, follow these steps in order:
+
+
+### In the Virtual Machine
+
+1. Start up the VM and log in. Open a new terminal and run the following:
+
+```bash
+hostname -I
+```
+
+This command will display the IP address to which the VM is connected within the host PC's network. 
+
+Copy this IP address to use it from the host computer.
+
+> **Note:** If no IP address appears, make sure the VM’s network settings are configured correctly using the **“Host-only Adapter”** with the name available in your VirtualBox. If you still don’t see the IP address, shut down the VM and change the network adapter to **“Bridge Adapter”**. Start the VM and verify that you can browse the internet. Then, try again to obtain the VM's IP address.
+
+
+### In the host PC
+
+2. Open a new terminal, go to the project root directory `UNetyEmu`, and run the following (replace `<IP_ADDRESS>` with the IP address you obtained from the VM):
+
+**For Linux host PCs:**
+```bash
+python3 loadUNetyEmu.py --ip <IP_ADDRESS>
+```
+> **Example:** python3 loadUNetyEmu.py --ip 192.168.56.109
+
+**For Windows host PCs:**
+```bash
+python loadUNetyEmu_windows.py --ip <IP_ADDRESS>
+```
+> **Example:** python loadUNetyEmu_windows.py --ip 192.168.56.105
+
+This will open a window displaying our **Unity demo scene**. Note that in the upper-left corner, there are **RED** bidirectional arrows, right before **“ROS2 IP”**. Following that, you’ll see the **IP** address that Unity expects to use to connect to the VM (which runs ROS2) via port **10000**.
+
+> **Note:** On the first run, the build is downloaded from the [GitHub Release](https://github.com/intrig-unicamp/UNetyEmu/releases/tag/sbrc26-release) and extracted to `built_up_UNetyEmuROS/` or `built_up_Windows/`, respectively. 
+
+
+### In the Virtual Machine
+
+3. Open a new terminal, go to the project root directory `UNetyEmu`, and build the ROS2 workspace:
+
+```bash
+./buildWorkspace.sh
+```
+
+4. After that, start the ROS-TCP-Endpoint by executing the following:
+
+```bash
+fuser -k 10000/tcp || true
+source /opt/ros/humble/setup.bash
+source $HOME/git/UNetyEmu/ros2_ws/install/setup.bash
+cd $HOME/git/UNetyEmu
+./runROS.sh
+```
+
+At this point, you will notice that, in the **Unity** window on the **host PC**, the bidirectional arrows have turned **BLUE**. This means that the connection has been established successfully and that both Unity and ROS2 can exchange messages.
+
+
+5. Finally, open a new terminal and Start RViz2:
+
+```bash
+source /opt/ros/humble/setup.bash
+source $HOME/git/UNetyEmu/ros2_ws/install/setup.bash
+rviz2 -d $HOME/git/UNetyEmu/rviz/UNetyEmuROS_sensors.rviz
+```
+
+In summary, on the host PC, you’ll see the drones and cars available in this demo (you can switch views from there), while on the VM side, you’ll be viewing the sensor output data arriving via ROS2 and displayed in RViz2. Additionally, from the VM, you’ll be able to execute all the commands for the next experiments.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/intrig-unicamp/UNetyEmu/refs/heads/main/ImagesDoc/demoLaunchedVM.png" height="500" alt="demoLaunchedVM.png">
+</p>
+
+
+
+
+
+
+## Option B — If you chose the Native Installation
+
 To run the quick demo, make sure you're in the project root directory `UNetyEmu`, and execute the following: 
 
 ```bash
@@ -320,11 +444,15 @@ For more details, please refer to the relevant section in our documentation: [Mi
 
 
 
+
+
 # Experiments
 
 In this demonstration, you can perform 4 different experiments in which various drones and cars interact within the same scene. 
 
-First, add ROS2 to your `.bashrc` so that RViz2 work in any terminal:
+> **Note:** If you chose to use the virtual machine, remember that all of the following commands must be run inside the virtual machine, while you can watch what’s happening with the drones and cars on the host PC.
+
+Before you start, if this is the first time you're running the simulator, add ROS2 to your `.bashrc` so that RViz2 work in any terminal:
 
 ```bash
 echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
